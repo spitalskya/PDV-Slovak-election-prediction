@@ -1,0 +1,113 @@
+\documentclass[12pt,oneside,a4paper,slovak]{article}   
+\usepackage{subfiles}
+
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amstext}
+\usepackage{amsmath}
+\usepackage{amscd}
+\usepackage{amssymb}
+\usepackage{caption}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage{dirtree}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{pythonhighlight}
+\usepackage[skip=0pt]{caption}
+\usepackage{subcaption}
+\usepackage{geometry}
+\usepackage[final]{hyperref}
+\usepackage[T1]{fontenc}                % slovencina
+\usepackage[slovak]{babel}
+\usepackage{verbatim}
+\usepackage{xcolor}
+
+
+% Define colors for the terminal input and output
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Define the style for terminal input
+\lstdefinestyle{terminal}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegray},
+	keywordstyle=\color{codepurple},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codegreen},
+	basicstyle=\footnotesize\ttfamily,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	%numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\usepackage[font=small]{caption} % Adjust caption font size
+\captionsetup[figure]{labelformat=empty}
+
+\geometry{top=2cm, bottom=2cm, left=2.5cm, right=2.5cm, headheight=0.6cm, headsep=0.3cm, footskip=1cm}
+
+\renewcommand{\rmdefault}{phv} % Arial
+\renewcommand{\sfdefault}{phv} % Arial
+\renewcommand{\baselinestretch}{1}
+\newcommand*{\vertbar}{\rule[0ex]{0.3pt}{1.5ex}}
+\newcommand*{\horzbar}{\rule[0ex]{1.5ex}{0.3pt}}
+\setlength{\parindent}{1em}
+
+\begin{document}
+	\setcounter{section}{-1}
+	\begin{titlepage}
+		\large
+		
+		\begin{center}
+			\textbf{Fakulta matematiky, fyziky a informatiky Univerzity Komenského, Bratislava}
+			
+			\vspace{7.5cm}
+			
+			\LARGE\textbf{Projekt z }
+			
+			\vspace{1cm}
+			
+			\LARGE\textbf{ TITLE }
+			
+			\bigskip 
+		\end{center}
+			
+		\vfill
+		
+		\hfill
+		\begin{minipage}{0.5\textwidth}
+			\raggedleft
+			
+			\textit{...}
+	
+			Tomáš Antal
+
+			Erik Božík
+
+			Tomáš Varga
+
+			Teo Pazera
+			
+			Andrej Špitalský
+		\end{minipage}
+			
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	\subfile{template-chapter}
+	\newpage
+	
+\end{document}
