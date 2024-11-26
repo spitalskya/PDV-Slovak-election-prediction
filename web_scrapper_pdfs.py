@@ -69,7 +69,7 @@ def search_and_download_pdf(month: str, year: str):
 
 # Iterate over months and years
 months = ["januar", "februar", "marec", "april", "maj", "jun", "jul", "august", "september", "oktober", "november", "december"]
-years = range(2013, 2025)
+years = range(2010, 2013)
 
 for year in years:
     for month in months:
