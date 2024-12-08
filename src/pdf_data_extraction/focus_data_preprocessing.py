@@ -9,6 +9,8 @@ def add_dates(data: pd.DataFrame):
         datetime(year=2016, month=3, day=5),
         datetime(year=2020, month=2, day=29),
         datetime(year=2023, month=9, day=30),
+        datetime(year=2012, month=3, day=10),
+        datetime(year=2010, month=6, day=12),
     ]
     slovak_months = {
         "januar": 1,
