@@ -1,7 +1,7 @@
 - [ ] zohnat data - napisat focusu/ako?
   - [ ] databaza/csv?
   - [ ] zistit ako vela mame dat, ci chceme dogenerovat
-  - [ ] TEO - selenium webscrape (po volbach 2012 do teraz)
+  - [X] TEO - selenium webscrape (po volbach 2012 do teraz)
   - [ ] Erik - z pdfka tabulku
   - [ ] Tomas V. - data z volieb (2012, 2016, 2020, 2023)
 - [ ] dizajn modelu
