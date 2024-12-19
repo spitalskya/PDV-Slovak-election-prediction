@@ -8,7 +8,7 @@ from tqdm import tqdm
 # def main():
 # parse the documents in the folder
 converter = DocumentConverter()
-pdfs = list(map(lambda x: "../../FOCUS_pdf/" + x, os.listdir("../../FOCUS_pdf")))
+pdfs = list(map(lambda x: "src/focus_scraping/FOCUS_pdf/" + x, os.listdir("src/focus_scraping/FOCUS_pdf")))
 result = converter.convert(pdfs[101])
 # for i in result.document.tables:
 #     print(i.export_to_dataframe())
@@ -62,7 +62,7 @@ concatenated = pd.concat(tables).reset_index()
 # )  # type: ignore
 # concatenated.drop([1430, 1166], inplace=True)
 
-concatenated.to_csv("focus.csv", index=False)
+concatenated.to_csv("src/focus_scraping/pdf_data_extraction/focus.csv", index=False)
 
 
 # if __name__ == "__main__":

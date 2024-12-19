@@ -1,5 +1,5 @@
 def main() -> None:
-    print("Hello from `prediction_models.py`")
+    print("Hello from `classification_models.py`")
 
 if __name__ == "__main__":
     main()
