@@ -52,6 +52,32 @@
 	tabsize=2
 }
 
+\lstdefinestyle{python}{
+	language=Python,               % Set language to Python
+	basicstyle=\ttfamily\small,    % Use a small, monospaced font
+	keywordstyle=\color{blue},     % Keywords in blue
+	stringstyle=\color{red},       % Strings in red
+	commentstyle=\color{green},    % Comments in green
+	numbers=none,                  % Disable line numbers
+	frame=single,                  % Add a frame around the code
+	tabsize=4,                     % Set tab width
+	breaklines=true                % Enable line breaking
+}
+
+\lstset{style=python}
+
+\newcommand\pythonstyle{\lstset{
+		language=Python,
+		basicstyle=\ttm,
+		morekeywords={self},              % Add keywords here
+		keywordstyle=\ttb\color{deepblue},
+		emph={MyClass,__init__},          % Custom highlighting
+		emphstyle=\ttb\color{deepred},    % Custom highlighting style
+		stringstyle=\color{deepgreen},
+		frame=tb,                         % Any extra options here
+		showstringspaces=false
+}}
+
 \usepackage[font=small]{caption} % Adjust caption font size
 \captionsetup[figure]{labelformat=empty}
 
@@ -65,7 +91,7 @@
 \setlength{\parindent}{1em}
 
 \begin{document}
-	\setcounter{section}{-1}
+	\setcounter{section}{0}
 	\begin{titlepage}
 		\large
 		
@@ -74,32 +100,27 @@
 			
 			\vspace{7.5cm}
 			
-			\LARGE\textbf{Projekt z }
+			\LARGE\textbf{ Predikcie volieb podľa prieskumov verejnej mienky }
 			
 			\vspace{1cm}
 			
-			\LARGE\textbf{ TITLE }
+			\large\textit{projekt z predmetu Princípy dátovej vedy}
 			
 			\bigskip 
 		\end{center}
 			
 		\vfill
 		
-		\hfill
+		\begin{minipage}{0.5\textwidth}
+			\raggedright
+			
+			\textit{Tomáš Antal\\Erik Božík\\Teo Pazera\\Andrej Špitalský\\Tomáš Varga}
+		\end{minipage}
+		\hfil
 		\begin{minipage}{0.5\textwidth}
 			\raggedleft
-			
-			\textit{...}
-	
-			Tomáš Antal
-
-			Erik Božík
-
-			Tomáš Varga
-
-			Teo Pazera
-			
-			Andrej Špitalský
+			\vspace{2.6cm}
+			\today
 		\end{minipage}
 			
 	\end{titlepage}
@@ -107,7 +128,18 @@
 	\tableofcontents
 	\newpage
 	
-	\subfile{template-chapter}
+	\subfile{predstavenie-temy}
 	\newpage
+	\subfile{spracovanie-dat}
+	\newpage
+	\subfile{explorativna-analyza}
+	\newpage
+	\subfile{klasifikacne-modely}
+	\newpage
+	\subfile{predikcne-modely}
+	\newpage
+	\subfile{predikcie-volieb}
+	\newpage
+	\subfile{zhrnutie}
 	
 \end{document}
