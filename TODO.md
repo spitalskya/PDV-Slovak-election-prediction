@@ -12,7 +12,7 @@
   - [ ] dorobit `requirements.txt`
   - [ ] upratat, zdokumentovat a okomentovat kod
 - [ ] report
-  - [ ] Andrej - template
+  - [x] Andrej - template
   - [ ] proces získania dát
   - [ ] exploratívna analýza
   - [ ] klasifikácia + ohodnotenie funkcnosti
