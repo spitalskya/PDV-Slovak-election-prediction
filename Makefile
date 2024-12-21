@@ -7,5 +7,5 @@ classification:
 prediction:
 	python -m src.prediction_models
 
-split_polls:
-	python -m src.focus_scraping.pdf_data_extraction.split_polls_by_election
+handle_polls:
+	python -m src.focus_scraping.polls_data_handling
