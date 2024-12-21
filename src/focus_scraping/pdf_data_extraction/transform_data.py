@@ -1,7 +1,7 @@
 import pandas as pd
 from tqdm import tqdm
 
-df = pd.read_csv("focus_to_election.csv")
+df = pd.read_csv("src/focus_scraping/pdf_data_extraction/focus_to_election.csv")
 df["date"] = pd.to_datetime(df["date"])
 df[~df.isin(["Centrum - periféria", "Mesto - vidiek"]).any(axis=1)]
 df.replace(r".*-.*", "", inplace=True, regex=True)
@@ -29,4 +29,4 @@ for i in tqdm(df["political_party"].unique()):
 cols = ["political_party"] + list(cols.strftime("%Y-%m-%d"))
 data = pd.DataFrame(table, columns=cols)
 
-data.to_csv("focus_final.csv")
+data.to_csv("src/focus_scraping/pdf_data_extraction/focus_final.csv")

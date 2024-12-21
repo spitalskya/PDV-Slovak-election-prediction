@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import requests
 
 # Path to Chromedriver
-driver_path = r"C:\Windows\system32\chromedriver\win64-131.0.6778.0\chromedriver-win64\chromedriver.exe"  
+driver_path = "C:\\Windows\\system32\\chromedriver\\win64-131.0.6778.0\\chromedriver-win64\\chromedriver.exe"  
 chrome_options = Options()
 #chrome_options.add_argument("--start-maximized")
 service = Service(driver_path)
@@ -54,7 +54,7 @@ def search_and_download_pdf(month: str, year: str):
             print(f"Downloading PDF for {month} {year}...")
             response = requests.get(pdf_url)
             if response.status_code == 200:
-                pdf_name = f"FOCUS_pdf/Prieskum_{year}_{month}.pdf"
+                pdf_name = f"src/focus_scraping/FOCUS_pdf/Prieskum_{year}_{month}.pdf"
                 with open(pdf_name, "wb") as file:
                     file.write(response.content)
                 print(f"PDF downloaded successfully as {pdf_name}")

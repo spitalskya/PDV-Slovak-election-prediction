@@ -1,9 +1,22 @@
-- [ ] zohnat data - napisat focusu/ako?
-  - [ ] databaza/csv?
-  - [ ] zistit ako vela mame dat, ci chceme dogenerovat
-  - [X] TEO - selenium webscrape (po volbach 2012 do teraz)
-  - [ ] Erik - z pdfka tabulku
-  - [ ] Tomas V. - data z volieb (2012, 2016, 2020, 2023)
-- [ ] dizajn modelu
-  - [ ] nastudovat metodologie
-  - [ ] 
+- [X] zohnat data - napisat focusu/ako?
+  - [X] databaza/csv?
+  - [X] zistit ako vela mame dat, ci chceme dogenerovat
+  - [X] TEO - selenium webscrape (po volbach 2012 do teraz), politicke statistiky
+  - [X] Erik - z pdfka tabulku
+  - [X] Tomas V. - data z volieb (2012, 2016, 2020, 2023)
+- [ ] model a kod
+  - [X] nastudovat metodologie
+  - [ ] explorativna analyza
+  - [ ] Tomas A. - klasifikacia dostania sa do parlamentu
+  - [ ] Andrej - ARIMA, VARIMA, skok v preferenciach
+  - [ ] dorobit `requirements.txt`
+  - [ ] upratat, zdokumentovat a okomentovat kod
+- [ ] report
+  - [ ] Andrej - template
+  - [ ] proces získania dát
+  - [ ] exploratívna analýza
+  - [ ] klasifikácia + ohodnotenie funkcnosti
+  - [ ] predikčný model + ohodnotenie funkcnosti
+  - [ ] predikcie, keby su volby o mesiac
+  - [ ] zhrnutie included suborov
+  - [ ] zhrnutie

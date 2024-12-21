@@ -7,7 +7,7 @@
     "OĽANO -NOVA- KÚ $_{-ZMENA ZDOLA}$": "olano",
     "KDH": "kdh",
     "$_{SME RODINA}$": "sme_rodina",
-    "Aliancia  $_{- Szövetség}$": "alianca_szovetseg",
+    "Aliancia  $_{- Szövetség}$": " ",
     "$_{SNS}$": "sns",
     "Kotlebovci  $_{- ĽS Naše Slovensko}$": "lsns",
     "$_{ZA ĽUDÍ}$": "za_ludi",
@@ -238,5 +238,14 @@
     "SZÖVETSÉG - Magyarok. Nemzetiségek. Regiók. | ALIANCIA - Maďari. Národnosti. Regióny": "madarska_aliancia",
     "SRDCE vlastenci a dôchodcovia - SLOVENSKÁ NÁRODNÁ JEDNOTA":"snj",
     "SDKÚ - DS - Slovenská demokratická a kresťanská únia - Demokratická strana": "sdku_ds",
-    "KARMA": "karma"
+    "KARMA": "karma",
+    "PS": "progresivne_slovensko",
+    "Hlas": "hlas_sd",
+    "Smer": "smer_sd",
+    "Olano": "olano",
+    "SAS": "sas",
+    "Republika": "republika",
+    "Republika ": "republika",
+    "SME rodina": "sme_rodina",
+    "Aliancia": "madarska_aliancia"
 }

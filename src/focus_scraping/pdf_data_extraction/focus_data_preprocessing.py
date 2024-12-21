@@ -61,8 +61,8 @@ def main(CSV_NAME: str, JSON_MAPPER_NAME: str):
     map_names(data, JSON_MAPPER_NAME)
     data.drop("index", inplace=True, axis="columns")
     data.sort_values(by="to_election", inplace=True)
-    data.to_csv("focus_to_election.csv", index=False)
+    data.to_csv("src/focus_scraping/pdf_data_extraction/focus_to_election.csv", index=False)
 
 
 if __name__ == "__main__":
-    main("focus.csv", "mapper.json")
+    main("src/focus_scraping/pdf_data_extraction/focus.csv", "src/focus_scraping/pdf_data_extraction/mapper.json")

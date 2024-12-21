@@ -1,0 +1,14 @@
+__pycache__
+.vscode
+*.aux
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.toc
+*.out
+*.nav
+*.snm
+*.vrb
+tex/*.log
