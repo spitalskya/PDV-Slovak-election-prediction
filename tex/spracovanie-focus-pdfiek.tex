@@ -4,14 +4,17 @@
 	
 \subsection{Scraping dát}
 Na účely tohto projektu potrebujeme mať značnú históriu volebných prieskumov v jednotnom formáte.
-Nakoľko však agentúra FOCUS nezverejňuje s každým prieskumom jednotný .xlsx alebo .csv súbor tak je táto úloha obzvlášť problematická.
-S každým vykonaným prieskumom majú k dispozícií .pdf v štýle reportu (Press release), pri ktorých sme skontrolovali viaceré rôzne a javí sa, že FOCUS pri týchto reportoch udržuje jednotný formát v priebehu rokov.
+Nakoľko však agentúra FOCUS nezverejňuje s každým prieskumom jednotný .xlsx alebo .csv súbor a rovnako na svojej stranke nemá zverejnene všetky prieskumy, ktoré kedy vykonal, tak je táto úloha obzvlášť problematická.
+Väčšina vykonaných prieskumov je naštastie k dispozícií .pdf v štýle reportu (Press release), pri ktorých sme skontrolovali viaceré rôzne a javí sa, že FOCUS pri týchto reportoch udržuje jednotný formát v priebehu rokov.
 Súčasťou kaźdého takéhoto .pdf súboru je aj samotný prieskum, napríklad:
 
 \includegraphics[width=0.8\textwidth]{figs/priklad-focus-prieskumu.png}
 
-Pustili sme sa teda do automatizovaného sťahovania zo stránok \href{https://www.focus-research.sk/}{FOCUSu} pomocou python knižnice \href{https://github.com/SeleniumHQ/Selenium}{Selenium}. 
-Podarilo sa nám takýchto reportov získať 127.
+Pustili sme sa teda do automatizovaného sťahovania z webu pomocou python knižnice \href{https://github.com/SeleniumHQ/Selenium}{Selenium}. 
+Ktorá vie interagovať s webovím prehliadačom ako bežny user. A teda sme pomocou iterativneho odoslania query do prehliadača vo forme: focus prieskum volby {month} {year}" + " filetype:pdf
+stiahli prvý result vo forme .pdf filu. Avšak ak v danom mesiaci nebol uskutočnení prieskum stiahli sme file ktorý nám bol zbytočný a museli sme ho identifikovať a odstraniť. 
+Podarilo sa nám takýchto reportov získať 127. 
+
 
 \subsection{Extrahovanie údajov}
 Ďalej sme hľadali spôsob ako tieto tabuľky automatizovane extrahovať na účel vytvorenia jednotného .csv súboru.
