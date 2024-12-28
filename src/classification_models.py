@@ -3,39 +3,18 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, precision_score, confusion_matrix
 import numpy
-from sklearn.base import BaseEstimator
-from typing import Callable, Optional
+from sklearn.base import BaseEstimator, ClassifierMixin
+from typing import Callable, Optional, Type
 from sklearn.svm import SVC
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from utils import join_dfs, make_interactions, extract_and_scale
+from sklearn.feature_selection import SequentialFeatureSelector
+from sklearn.model_selection import GridSearchCV
 
 numpy.random.seed(42)
 
-def add_variables(main_data: pd.DataFrame, data_general: pd.DataFrame) -> pd.DataFrame:
-    """Add columns 'unemployment_in_coallition' and 'Total inflation rate (%)' into our main dataframe"""
-
-    main_data["election_date"] = pd.to_datetime(main_data["election_date"]) # make a date format from string
-    main_data["year"] = main_data["election_date"].dt.year # new column year
-
-    #-----------------------------------------------------------------------------------------------------------------------------
-    # Add column in_coalition * unemployment_rate
-    data_general_long = data_general.melt(id_vars=['indicator'], var_name='year', value_name='unemployment_rate') # make the table in long format
-    data_general_long = data_general_long[data_general_long["indicator"] == "Unemployment rate (%)"] # take only unemployment rate
-    data_general_long['year'] = data_general_long['year'].astype(int) # cast string to int
-    data_general_long['unemployment_rate'] = data_general_long['unemployment_rate'].astype(float) # cast string to float
-    df_main = pd.merge(main_data, data_general_long[['year', 'unemployment_rate']], on='year', how='left') # merge two dfs
-    df_main["unemployment_in_coallition"] = df_main["in_coalition_before"] * df_main["unemployment_rate"] # 1 / 0 * unemployment_rate
-    #-----------------------------------------------------------------------------------------------------------------------------
-    # Add column inflation
-    data_general_long = data_general.melt(id_vars=['indicator'], var_name='year', value_name='Total inflation rate (%)')
-    data_general_long = data_general_long[data_general_long["indicator"] == "Total inflation rate (%)"]
-    data_general_long['year'] = data_general_long['year'].astype(int)
-    data_general_long['unemployment_rate'] = data_general_long['Total inflation rate (%)'].astype(float)
-    df_main = pd.merge(df_main, data_general_long[['year', 'Total inflation rate (%)']], on='year', how='left') # merge two dfs
-
-    return df_main
 
 def extract_variables(data: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Extract features and targets from dataframe"""
@@ -95,21 +74,28 @@ def run_basic_models(models: list[BaseEstimator], X_train: pd.DataFrame,
     
     return result
 
-class Ensemble:
+class Ensemble(ClassifierMixin, BaseEstimator):
     models: list[BaseEstimator]
     metric: Callable
     weights: Optional[list[float]]
     fitted_classifiers: list[BaseEstimator]
+    classes_: np.ndarray
+    threshold: float
 
-    def __init__(self, models: list[BaseEstimator], metric: Callable, weights: Optional[list[float]] = None):
+    def __init__(self, models: list[Type[BaseEstimator]],
+                 metric: Callable, threshold: float = 0.5,
+                 weights: Optional[list[float]] = None) -> None:
         """
         Args:
         models: list[model] -> array of models to be used
         metric: Callable -> metric that is used for determining the 'weight' of model in final prediction
-        weights: list[float] -> optional parameter, if given, no additional scores for final prediction are computed"""
+        weights: list[float] -> optional parameter, if given, no additional scores for final prediction are computed
+        threshold: float -> hyperparameter for predict method"""
 
         assert all([hasattr(model, "fit") for model in models]), "All models must have method called 'fit'"
         assert all([hasattr(model, "predict") for model in models]), "All models must have method called 'predict'"
+
+        assert 0 < threshold < 1, "Threshold must be between 0 and 1"
         
         if weights is not None:
             assert len(models) == len(weights), "If given weights, must have same number of elements as 'models' "
@@ -117,32 +103,34 @@ class Ensemble:
         self.models = models
         self.metric = metric
         self.weights = weights
+        self.threshold = threshold
     
     def fit(self, X: pd.DataFrame, y: pd.DataFrame) -> None:
 
         self.fitted_classifiers = []
+        self.classes_ = np.unique(y)
 
         for model in self.models:
-            """fit each model"""
+            # fit each model
             classifier = model()
 
             classifier.fit(X=X, y=y)
             self.fitted_classifiers.append(classifier)
         
         if self.weights is None:
-            """calculate i-th weight for i-th model"""
+            # calculate i-th weight for i-th model
             scores = []
             for classifier in self.fitted_classifiers:
                 predicted = classifier.predict(X=X)
 
                 scores.append(self.metric(y_true=y, y_pred=predicted))
                 
-            """normalize the weights"""
+            # normalize the weights
             total = sum(scores)
             scores = [value / total for value in scores]
             self.weights = scores.copy()
     
-    def predict(self, X: pd.DataFrame, threshold: float = 0.5):
+    def predict(self, X: pd.DataFrame):
         predictions: list[np.ndarray] = []
 
         for classifier in self.fitted_classifiers:
@@ -150,11 +138,12 @@ class Ensemble:
         
         weighted_sum: np.ndarray = np.dot(np.array(predictions).T, np.array(self.weights))
 
-        return (weighted_sum >= threshold).astype(int)
+        return (weighted_sum >= self.threshold).astype(int)
 
 
 def plot_all_confusion_matrices(y_true: pd.Series, model_predictions: dict, ensemble_pred: np.ndarray) -> None:
     """Plots all confusion matrices side by side for comparison"""
+
     models = list(model_predictions.keys()) + ['Ensemble']
     predictions = list(model_predictions.values()) + [ensemble_pred]
 
@@ -174,6 +163,29 @@ def plot_all_confusion_matrices(y_true: pd.Series, model_predictions: dict, ense
     plt.tight_layout()
     plt.show()
 
+def optimal_features(estimator: BaseEstimator,
+                     X_train: pd.DataFrame,
+                     y_train: pd.DataFrame,
+                     X_test: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
+    """estimates the best subset of features for given estimator based on accuracy
+    Args:
+        estimator: model for which the optimal subset of features to be determined
+        X_train: training features
+        X_test: testing features
+        y_train: training targets
+    Returns:
+        selected X_train features, selected X_test features"""
+    
+    sfs = SequentialFeatureSelector(estimator=estimator, tol=0,
+                                    direction="forward",
+                                    scoring="accuracy", cv=5)
+    sfs.fit(X_train, y_train)
+
+    X_train_selected = sfs.transform(X_train)
+    X_test_selected = sfs.transform(X_test)
+
+    return X_train_selected, X_test_selected
+
 
 def main() -> None:
     
@@ -184,27 +196,91 @@ def main() -> None:
     data_train: pd.DataFrame = pd.read_csv(path_train)
     data_test: pd.DataFrame = pd.read_csv(path_test)
     data_general: pd.DataFrame = pd.read_csv(path_general_data)
+    # loading original data
 
+    y_train: pd.DataFrame = data_train.loc[:, "elected_to_parliament"]
+    y_test: pd.DataFrame = data_test.loc[:, "elected_to_parliament"]
 
-    data_train = add_variables(data_train, data_general)
-    data_test = add_variables(data_test, data_general)
+    combined_data_train: pd.DataFrame = join_dfs(main_data=data_train, data_general=data_general)
+    combined_data_test: pd.DataFrame = join_dfs(main_data=data_test, data_general=data_general)
+    # combining general data and polls
 
-    X_train, y_train = extract_variables(data=data_train)
-    X_test, y_test = extract_variables(data=data_test)
-
-    models: list[BaseEstimator] = [LogisticRegression, SVC, DecisionTreeClassifier]
-
-    models_predictions = run_basic_models(models=models, X_train=X_train, y_train=y_train,
-                                          X_test=X_test, y_test=y_test, metrics=[accuracy_score])
+    interacted_data_train: pd.DataFrame = make_interactions(data=combined_data_train,
+                                                            variables=["in_coalition_before"],
+                                                            to_interact=["Unemployment rate (%)", "Pension expenditures (per capita)", "Expenditures on research and development"])
+    interacted_data_test: pd.DataFrame = make_interactions(data=combined_data_test,
+                                                            variables=["in_coalition_before"],
+                                                            to_interact=["Unemployment rate (%)", "Pension expenditures (per capita)", "Expenditures on research and development"])
+    """making interactions"""
     
+    final_variables: list[str] = [
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+        "in_coalition_before_Unemployment rate (%)",
+        "in_coalition_before_Pension expenditures (per capita)",
+        "in_coalition_before_Expenditures on research and development",
+        "Risk of poverty rate", "Total household income", "Total inflation rate (%)",
+        "Gasoline price 95 octane",
+    ]
+    # extracting and scaling data to final format
+    final_train = extract_and_scale(data=interacted_data_train, variables_to_extract=final_variables)
+    final_test = extract_and_scale(data=interacted_data_test, variables_to_extract=final_variables)
+
+    #--------------------------------------------------------------
+    # Determine the optimal features using sequential feature selection
+    models: list[BaseEstimator] = [LogisticRegression, SVC, DecisionTreeClassifier]
     ensemble = Ensemble(models=models, metric=accuracy_score)
-    ensemble.fit(X=X_train, y=y_train)
-    ensemble_predictions = ensemble.predict(X=X_test, threshold=0.5)
+    ensemble_train, ensemble_test = optimal_features(estimator=ensemble, X_train=final_train,
+                                                     y_train=y_train, X_test=final_test)
+    #--------------------------------------------------------------
+    # Determine the optimal threshold using cross-validation
+    thresholds = np.linspace(0, 1, 100)
+    param_grid = {
+        'threshold': thresholds
+    }
 
-    plot_all_confusion_matrices(y_true=y_test, model_predictions=models_predictions, ensemble_pred=ensemble_predictions)
+    grid_search = GridSearchCV(
+        estimator=ensemble, 
+        param_grid=param_grid,
+        scoring="accuracy",
+        cv=5
+    )
+    grid_search.fit(ensemble_train, y_train)
+    best_threshold = grid_search.best_params_["threshold"]
+    #--------------------------------------------------------------
+    # final ensemble
+    final_ensemble = Ensemble(models=models, metric=accuracy_score, threshold=best_threshold)
+    final_ensemble.fit(ensemble_train, y=y_train)
+    #--------------------------------------------------------------
+    # Logistic regression
+    log_reg: LogisticRegression = LogisticRegression()
+    log_reg_train, log_reg_test = optimal_features(estimator=log_reg, X_train=final_train, 
+                                                   y_train=y_train, X_test=final_test)
+    
+    final_log_reg = LogisticRegression()
+    final_log_reg.fit(X=log_reg_train, y=y_train)
+    #--------------------------------------------------------------
+    # Decision treee
+    tree: DecisionTreeClassifier = DecisionTreeClassifier()
+    tree_train, tree_test = optimal_features(estimator=tree, X_train=final_train, 
+                                             y_train=y_train, X_test=final_test)
+    
+    final_tree = DecisionTreeClassifier()
+    final_tree.fit(X=tree_train, y=y_train)
 
+    #--------------------------------------------------------------
+    # Support Vector Classification
+    svc: SVC = SVC()
+    svc_train, svc_test = optimal_features(estimator=svc, X_train=final_train, 
+                                           y_train=y_train, X_test=final_test)
+    
+    final_svc = SVC()
+    final_svc.fit(X=svc_train, y=y_train)
+    #--------------------------------------------------------------
 
-
+    print("Ensemble accuracy: ", accuracy_score(y_true=y_test, y_pred=final_ensemble.predict(X=ensemble_test)))
+    print("Logistic regression accuracy: ", accuracy_score(y_true=y_test, y_pred=final_log_reg.predict(X=log_reg_test)))
+    print("Decision tree accuracy: ", accuracy_score(y_true=y_test, y_pred=final_tree.predict(X=tree_test)))
+    print("SVC accuracy: ", accuracy_score(y_true=y_test, y_pred=final_svc.predict(X=svc_test)))
 
 if __name__ == "__main__":
     main()
