@@ -6,9 +6,9 @@
 V exploratívnej analýze sme sa zamerali na ukázanie relevantnosti dát, ktoré sme nazbierali a rovnako aj na vytvorenie si očakávaní od predikčného modelu. Teda po nazbieraní a uprataní dát sme hlavne riešili to, ako dané dáta budeme kombinovať a či niektoré z nich budú relevantné pre náš predikčný model.
 
 \subsection{Náhľad do dát polls_by_election}
-Hlavný dataset obsahuje dáta, ktorú máme v plane v upravenej verzi použiť na predikciu volebných výsledkov. Pre každú stranu dataset obsahuje posledných 12 prieskumov a výsledky volieb spolu s informáciami, či bola strana v parlamente, opozícii, alebo koalícii. Bolo by teda vhodné sa pozrieť na to ako sa vyvijali volebné prieskumy 12 mesiacov pred voľbami. Ak by sme našli jasne trendy kedy strana postupne rastie v čase chceli by sme očakávať od nášho modelu, že tento rast sa v ňom ukáže. 
+Hlavný dataset obsahuje dáta, ktorú máme v plane v upravenej verzií použiť na predikciu volebných výsledkov. Pre každú stranu dataset obsahuje posledných 12 prieskumov a výsledky volieb spolu s informáciami, či bola strana v parlamente, opozícii, alebo koalícii. Bolo by teda vhodné sa pozrieť na to ako sa vyvíjali volebné prieskumy 12 mesiacov pred voľbami. Ak by sme našli jasne trendy kedy strana postupne rastie v čase chceli by sme očakávať od nášho modelu, že tento rast sa v ňom ukáže. 
 
-Teda na ukážku sme si vybrali dáta z minulo ročných volieb a rovnako sme vyfiltrovali strany čo dosiahly v prieskumoch pred voľbami nenulový výsledok. 
+Teda na ukážku sme si vybrali dáta z minulo ročných volieb a rovnako sme vyfiltrovali strany čo dosiahli v prieskumoch pred voľbami nenulový výsledok. 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=\textwidth]{../images_exploratory/Polls_without_result_2023.png}
@@ -16,7 +16,7 @@ Teda na ukážku sme si vybrali dáta z minulo ročných volieb a rovnako sme vy
     \label{fig:example}
 \end{figure}
 
-Už môžeme pozorovať ako sa vyvíjali názori voličov pred voľbami, napriklad zrod strany Demokrati alebo postupný prepad Hlasu či postupný nárast Progresivneho Slovenska.
+Už môžeme pozorovať ako sa vyvíjali názory voličov pred voľbami, napríklad zrod strany Demokrati alebo postupný prepad Hlasu či postupný nárast Progresivneho Slovenska.
 Pridanie výsledku vo voľbách by malo ešte väčšiu výpovednú hodnotu, keďže budeme vedieť zhodnotiť aj to ako sa preferencie premietli už aj vo voľbách, a tak urobime presne to.
 \begin{figure}[!htbp]
     \centering
@@ -25,8 +25,8 @@ Pridanie výsledku vo voľbách by malo ešte väčšiu výpovednú hodnotu, ke�
     \label{fig:example}
 \end{figure}
 
-Je jasne, že prieskumy zachytavajú realitu pred voľbami relatívne dobre aj keď vidíme aj značné skoky pre určite strany. Avšak poradie toho ako strany dopadli vo voľbách sa skoro nezmenilo až na výrazný prepad strany Republika.
-Vidíme aj, že trendy v prieskumoch maju vplyv na to ako strana dopadne vo voľbách ale aj tu sa nájdu vynimky ako Hlas, ktorý niekoľko mesiacov pred voĺbami padal ale nakoniec dopadol lepšie ako v posledných prieskumoch. Taktiež ak sa niektoré strany dostali až pod hranicu zvoliteľnosti v prieskumoch často ju už neprekonali. Voliči majú prirodzený strach, že im prepadne hlas, a tak práve takýto výsledok v prieskumoch môže veľmi ubližiť strane.
+Je jasne, že prieskumy zachytávajú realitu pred voľbami relatívne dobre aj keď vidíme aj značné skoky pre určite strany. Avšak poradie toho ako strany dopadli vo voľbách sa skoro nezmenilo až na výrazný prepad strany Republika.
+Vidíme aj, že trendy v prieskumoch máju vplyv na to ako strana dopadne vo voľbách ale aj tu sa nájdu výnimky ako Hlas, ktorý niekoľko mesiacov pred voĺbami padal ale nakoniec dopadol lepšie ako v posledných prieskumoch. Taktiež ak sa niektoré strany dostali až pod hranicu zvoliteľnosti v prieskumoch často ju už neprekonali. Voliči majú prirodzený strach, že im prepadne hlas, a tak práve takýto výsledok v prieskumoch môže veľmi ublížiť strane.
 
 Toto bol pohľad len na najnedávnejšie voľby, ale ako vyzerali aj tie predtým?
 
@@ -61,4 +61,45 @@ V našich dátach je informácia o tom či v predošlom volebnom období bola da
 V súčte strany vládnej moci vždy stratili až cez 15 percent v následujúcich voľbách avšak miera straty nebola ustálená, teda chceme veriť, že kvalita vládnutia aspoň do nijakej miery ovplyvnila koľko by dané strany stratili v následujúcich voľbách.
 V závislosti od tohto strany mimo vladnej koalicie nabrali vo výsledkoch zhruba v rovnakom množstve. 
 
+\subsection{Pohlaď na koaličné strany a rozvoj krajiny}
+
+Po zistení z predchádzajúcich analýz, že sa stranám po spolupráci v koaličných vládach znižuje voličské zastúpenie, sme sa rozhodli preskúmať, či by tento jav nemohol byť zapríčinený ekonomicko-sociálnymi faktormi.
+Po úprave našich datasetov, ktoré zachytávajú vývoj všeobecných faktorov krajiny, ako napríklad HDP, a datasetu spojeného so stranami, ich koaličnými partnermi a obdobiami ich vládnutia, sme zistili, že napriek pravidelným stratám vo voličskom zastúpení jednotlivých koaličných strán existuje možnosť, že tieto rozhodnutia voličov nemusia byť až tak opodstatnené.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.98\textwidth]
+    {../images_exploratory/Coalition_Progress.png}
+    \caption{}
+    \label{fig:example}
+\end{figure}
+
+Na grafe je zobrazená koalícia a jej následné obdobie vládnutia. To znamená, že rozhodnutia koaličných strán z roku 2012 mali vplyv na vývoj situácie až do roku 2016. Pri mnohých ukazovateľoch, ako je napríklad percento nezamestnanosti, sa podarilo udržať klesajúci trend. Rovnako sa podarilo udržať rastúci trend pri HDP a ďalších ukazovateľoch. V prípade situácie s klesajúcim rizikom chudoby sa tiež prevažne podarilo udržať klesajúci trend. Dá sa teda povedať, že rozhodnutie voličov prestať podporovať danú stranu nemusí byť vždy spôsobené negatívnymi rozhodnutiami strán, ale aj inými faktormi, ako sú napríklad vyjadrenia politikov či iné okolnosti. Avšak, nie je to pravidlom.  
+
+
+Ďalším našim krokom bolo hlbšie sa zamerať na ideologické a štrukturálne faktory vládnucich koalícií a preskúmať, či ich spoločné hodnoty, ako je liberalizmus, orientácia na ľavú alebo pravú politickú stranu, postoj k integrácii do EÚ a ďalšie, zohrávali úlohu pri formovaní rastu krajiny. Porovnaním koalícií s rôznymi ideológiami sa snažíme zistiť, či tieto rozdiely ovplyvnili ich schopnosť podporovať pokrok v kľúčových oblastiach. 
+
+Naše dáta boli získané z Politického kompasu, kde však nie vždy presne zodpovedajú dátam týkajúcim sa zvolených strán, keďže nie všetky strany boli zahrnuté v Politickom kompase.
+
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]
+    {../images_exploratory/Liberalism-Conservatism.png}
+    \caption{}
+    \label{fig:example}
+
+    \centering
+    \includegraphics[width=\textwidth]
+    {../images_exploratory/EU-Intergration.png}
+    \caption{}
+    \label{fig:example}
+\end{figure}
+
+\clearpage
+Ako si môžeme všimnúť napríklad, v politickom období 2012 – 2016 bola koalícia zložená zo strán SNS, SMER-SD, KDH a SaS. Hoci tieto politické strany mali rozdielne názory na otázky ako integrácia do EÚ či liberalizmus kontra konzervativizmus, dokázali napriek tomu pozitívne ovplyvniť celkový stav krajiny. Napríklad sa im podarilo zvýšiť HDP, zlepšiť zdravotnú starostlivosť a zároveň znížiť mieru nezamestnanosti, riziko chudoby a celkovú infláciu.
+
+Mnohé zistenia a závery nás priviedli k rozhodnutiam ktoré nás viedli k tomu zostrojiť takýto model. (dopisat co treba ohlaodm modelu)
+
 \end{document}
+
