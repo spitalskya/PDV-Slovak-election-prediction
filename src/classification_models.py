@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, precision_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix
 import numpy
 from sklearn.base import BaseEstimator, ClassifierMixin
 from typing import Callable, Optional, Type
@@ -158,7 +158,7 @@ def plot_all_confusion_matrices(y_true: pd.Series, model_predictions: dict, ense
                     yticklabels=['Not Elected', 'Elected'])
         plt.ylabel('Actual') if i == 1 else plt.ylabel('')
         plt.xlabel('Predicted')
-        plt.title(f"Confusion Matrix: {model_name}")
+        plt.title(f"{model_name}")
 
     plt.tight_layout()
     plt.show()
@@ -281,6 +281,14 @@ def main() -> None:
     print("Logistic regression accuracy: ", accuracy_score(y_true=y_test, y_pred=final_log_reg.predict(X=log_reg_test)))
     print("Decision tree accuracy: ", accuracy_score(y_true=y_test, y_pred=final_tree.predict(X=tree_test)))
     print("SVC accuracy: ", accuracy_score(y_true=y_test, y_pred=final_svc.predict(X=svc_test)))
+    #--------------------------------------------------------------
+
+    plot_all_confusion_matrices(y_true=y_test, model_predictions={
+        "Logistic regression": final_log_reg.predict(X=log_reg_test),
+        "Decision Tree": final_tree.predict(X=tree_test),
+        "SVC": final_svc.predict(X=svc_test)
+    }, ensemble_pred=final_ensemble.predict(X=ensemble_test))
+
 
 if __name__ == "__main__":
     main()
