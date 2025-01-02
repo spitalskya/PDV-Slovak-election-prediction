@@ -6,7 +6,7 @@
 V exploratívnej analýze sme sa zamerali na ukázanie relevantnosti dát, ktoré sme nazbierali a rovnako aj na vytvorenie si očakávaní od predikčného modelu. Teda po nazbieraní a uprataní dát sme hlavne riešili to, ako dané dáta budeme kombinovať a či niektoré z nich budú relevantné pre náš predikčný model.
 
 \subsection{Náhľad do dát polls_by_election}
-Hlavný dataset obsahuje dáta, ktorú máme v plane v upravenej verzií použiť na predikciu volebných výsledkov. Pre každú stranu dataset obsahuje posledných 12 prieskumov a výsledky volieb spolu s informáciami, či bola strana v parlamente, opozícii, alebo koalícii. Bolo by teda vhodné sa pozrieť na to ako sa vyvíjali volebné prieskumy 12 mesiacov pred voľbami. Ak by sme našli jasne trendy kedy strana postupne rastie v čase chceli by sme očakávať od nášho modelu, že tento rast sa v ňom ukáže. 
+Hlavný dataset obsahuje dáta, ktorý máme v plane v upravenej verzií použiť na predikciu volebných výsledkov. Pre každú stranu dataset obsahuje posledných 12 prieskumov a výsledky volieb spolu s informáciami, či bola strana v parlamente, opozícii, alebo koalícii. Bolo by teda vhodné sa pozrieť na to ako sa vyvíjali volebné prieskumy 12 mesiacov pred voľbami. Ak by sme našli jasne trendy kedy strana postupne rastie v čase chceli by sme očakávať od nášho modelu, že tento rast sa v ňom ukáže. 
 
 Teda na ukážku sme si vybrali dáta z minulo ročných volieb a rovnako sme vyfiltrovali strany čo dosiahli v prieskumoch pred voľbami nenulový výsledok. 
 \begin{figure}[!htbp]
@@ -16,7 +16,7 @@ Teda na ukážku sme si vybrali dáta z minulo ročných volieb a rovnako sme vy
     \label{fig:example}
 \end{figure}
 
-Už môžeme pozorovať ako sa vyvíjali názory voličov pred voľbami, napríklad zrod strany Demokrati alebo postupný prepad Hlasu či postupný nárast Progresivneho Slovenska.
+Už môžeme pozorovať ako sa vyvíjali názory voličov pred voľbami, napríklad zrod strany Demokrati alebo mierny prepad Hlasu či postupný nárast Progresivneho Slovenska.
 Pridanie výsledku vo voľbách by malo ešte väčšiu výpovednú hodnotu, keďže budeme vedieť zhodnotiť aj to ako sa preferencie premietli už aj vo voľbách, a tak urobime presne to.
 \begin{figure}[!htbp]
     \centering
@@ -25,7 +25,7 @@ Pridanie výsledku vo voľbách by malo ešte väčšiu výpovednú hodnotu, ke�
     \label{fig:example}
 \end{figure}
 
-Je jasne, že prieskumy zachytávajú realitu pred voľbami relatívne dobre aj keď vidíme aj značné skoky pre určite strany. Avšak poradie toho ako strany dopadli vo voľbách sa skoro nezmenilo až na výrazný prepad strany Republika.
+Je jasne, že prieskumy zachytávajú realitu pred voľbami relatívne dobre aj keď vidíme aj značné skoky pre určite strany. Avšak poradie toho ako strany dopadli vo voľbách sa skoro nezmenilo až na výrazný prepad strany REPUBLIKA.
 Vidíme aj, že trendy v prieskumoch máju vplyv na to ako strana dopadne vo voľbách ale aj tu sa nájdu výnimky ako Hlas, ktorý niekoľko mesiacov pred voĺbami padal ale nakoniec dopadol lepšie ako v posledných prieskumoch. Taktiež ak sa niektoré strany dostali až pod hranicu zvoliteľnosti v prieskumoch často ju už neprekonali. Voliči majú prirodzený strach, že im prepadne hlas, a tak práve takýto výsledok v prieskumoch môže veľmi ublížiť strane.
 
 Toto bol pohľad len na najnedávnejšie voľby, ale ako vyzerali aj tie predtým?
@@ -40,17 +40,17 @@ Toto bol pohľad len na najnedávnejšie voľby, ale ako vyzerali aj tie predtý
     \label{fig:example}
 \end{figure}
 
-Voľby v roku 2012 mali jasného favorita v strane Smer, ktorá po voľbách aj sama zostavila vládu, za nasledok čoho sa považuje chaotický pád vlady a následné predčasné voľby. Strana sdku sa dramaticky prepadala v prieskumoch z 18 percent rok pred voľbami až na 6 percent v voľbách. 
+Voľby v roku 2012 mali jasného favorita v strane SMER, ktorá po voľbách aj sama zostavila vládu, za nasledok čoho sa považuje chaotický pád vlady a následné predčasné voľby. Strana SDKÚ sa dramaticky prepadala v prieskumoch z 18 percent rok pred voľbami až na 6 percent v voľbách. 
 
-V voľbách roku 2016 už Smer stratil na sile a v posledných mesiacoch kampane utrpel prepad na 28 percent. Zaujimavý vývoj mala strana Sieť, ktorá v prieskumoch obdržavala na 10 percent avšak v poslednom mesiaci kampane jej voliči pravdepodobne prestúpili k iným stranám ako Oľano, SAS či Sme rodina. Sieť sa tak prepadla až na hranicu zvoliteľnosti 5tich percent.
+V voľbách roku 2016 už SMER stratil na sile a v posledných mesiacoch kampane utrpel prepad na 28 percent. Zaujimavý vývoj mala strana Sieť, ktorá v prieskumoch dostavala nad 10 percent celkom konzistentne, avšak v poslednom mesiaci kampane jej voliči pravdepodobne prestúpili k iným stranám ako OĽaNO, SaS či Sme rodina. Sieť sa tak prepadla až na hranicu zvoliteľnosti 5tich percent.
 
-Voľby v roku 2020 sa ukazujú ako najvyrovnanejšie a to v tom zmysle, že viac strán dosahovalo v prieskumoch nad hranicu 10 percent. Avšak ujať vedenia sa podarilo strane Oĺano, ktorá rástla exponencialne v posledných mesiacoch pred voĺbami až ich aj nakoniec vyhrala. Graf nezachytáva realitu, toho že strane Progresivne Slovensko-Spolu sa nedostalo do parlamentu, keďže kandidovali ako koalicia dvoch stán a pre takýto typ politického objektu je potrebné dosiahnuť vo voľbach viac ako 7 percent. 
+Voľby v roku 2020 sa ukazujú ako najvyrovnanejšie a to v tom zmysle, že viac strán dosahovalo v prieskumoch nad hranicu 10 percent. Avšak ujať vedenia sa podarilo strane OĽaNO, ktorá rástla v posledných mesiacoch pred voľbami zatiaľ najvyraznejšie zo všetkých strán v prieskumoch, až ich aj nakoniec vyhrala. Graf nezachytáva realitu, toho že strane Progresivne Slovensko-Spolu sa nepodarilo dostať do parlamentu, keďže kandidovali ako koalicia dvoch stán a pre takýto typ politického objektu je potrebné dosiahnuť vo voľbach viac ako 7 percent. 
 
 Trend toho, že vládne strany počas výkonnu moci strácajú na podpore v následujúcich voľbach vyzerá ustálený v ramci všetkých volieb, ešte sa naň pozrieme bližšie. 
 
 \subsection{Dopad predošleho vládnutia na voľby}
 
-V našich dátach je informácia o tom či v predošlom volebnom období bola daná strana súčasťou koalicie alebo bola v parlamente/opozicií. Bolo by teda vhodne sa pozrieť na to ako sa hýbali voličske zakladne od strán v koalicíi a strán ktoré v nej neboli. 
+V našich dátach je informácia o tom či v predošlom volebnom období bola daná strana súčasťou koalicie alebo bola v parlamente/opozicií. Bolo by teda vhodne sa pozrieť na to ako sa menila voličská zakladňa strán v koalicíi a strán ktoré v nej neboli. 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=\textwidth]{../images_exploratory/Coalition_vs_NoCoalition.png}
@@ -59,7 +59,7 @@ V našich dátach je informácia o tom či v predošlom volebnom období bola da
 \end{figure}
 
 V súčte strany vládnej moci vždy stratili až cez 15 percent v následujúcich voľbách avšak miera straty nebola ustálená, teda chceme veriť, že kvalita vládnutia aspoň do nijakej miery ovplyvnila koľko by dané strany stratili v následujúcich voľbách.
-V závislosti od tohto strany mimo vladnej koalicie nabrali vo výsledkoch zhruba v rovnakom množstve. 
+V závislosti od tohto strany mimo vladnej koalície nabrali vo výsledkoch zhruba v rovnakom množstve. Rovnako volič mohol od vládnej koalicie prejsť k strane, ktorá má blizko k vládnej koalicie a po voľbách sa k nej pridala. Preto aj keď z roku 2012 na 2016 SMER stratil cez 15 percent komfortne zostavil vladu v roku 2016 za pomoci SNS, MOST - HÍD a Siete.
 
 \subsection{Pohlaď na koaličné strany a rozvoj krajiny}
 
