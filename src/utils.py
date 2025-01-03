@@ -72,7 +72,7 @@ def make_interactions(data: pd.DataFrame, variables: list[str], to_interact: lis
         interaction: str
         for interaction in to_interact:
             try:
-                data[f"{variable}*{interaction}"] = data[variable] * data[interaction]
+                data[f"{variable}_{interaction}"] = data[variable] * data[interaction]
             except Exception as e:
                 print(f"Variables ({variable, interaction}) could not be interacted because of an error: {e}")
     return data
