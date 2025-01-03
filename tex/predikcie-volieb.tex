@@ -3,5 +3,80 @@
 \begin{document}
 	
 \section{Predikcie volieb}	
+
+V tejto sekcií ukážeme výsledky nadizajnovaného modelu v sekcií \ref{sec:models}. Chceme predikovať výsledky volieb, keby sa konajú o mesiac a o 6 mesiacov od novembra 2024 (mesiac posledných nami zozbieraných údajov z prieskumov). Treba poznamenať, že budeme modelovať volebný výsledok iba pre nasledovné \enquote{relevantné} strany (v prieskumoch agentúry Focus majú za november aspoň 3\%) --  Progresívne Slovensko, Smer-SD, Hlas-SD, Slovensko, SaS, KDH, Republika, SNS, Sme rodina, Maďarská aliancia a Demokrati.
+
+Náš model sa skladá z dvoch častí:
+
+
+\begin{itemize}
+	\item na predikciu vývoja preferencií politickej strany používa Holtovo dvojité exponenciálne vyrovnávanie. Parametre $\alpha$ a $\beta$ sú nastavené pre každú stranu samostatne metódou maximálnej vierohodnosti z ich preferencií v prieskumoch od januára 2010 \\
+	\item rozdiel skutočného volebného výsledku oproti preferenciám strany v prieskume mesiac pred voľbami budeme modelovať lineárnou regresiou s troma premennými:
+	\begin{enumerate}
+		\item interakcia medzi účasťou v koalícii a hodnotou liberálnosti/konzervatívnosti
+		\item interakcia medzi účasťou v opozícii a hodnotou výdavkov na dôchodky (na človeka)
+		\item interakcia medzi nezamestnanosťou v percentách a HDP na človeka
+	\end{enumerate}
+	Parameter $\hat{\beta} \in \mathbb{R}^4$ pre lineárnu regresiu natrénujeme zo všetkých dostupných dát (ich tvar je opísaný vyššie) pre vyššie spomenutých 10 politických strán
+\end{itemize}
+
+Môžeme uviesť, že natrénovaný parameter $\hat{\beta}$ na naškálovných dátach (nulový priemer, jednotková variancia) mal nasledovný tvar:
+
+\begin{equation*}
+	\hat{\beta} = (0.806, 0.305, 1.88, 0.192)
+\end{equation*}
+
+Vidíme teda že všetky tri premenné majú pozitívny vplyv na predikciu, čiže ich zvýšenie predpokladá, že strana dosiahne vo voľbách vyšší výsledok, ako mala v prieskume pred voľbami. Najstrmší vplyv má interakcia medzi účasťou v opozícii a hodnotou výdavkov na dôchodky (na človeka).
+
+
+Pre predikciu volieb o $n$ mesiacov modelujeme vývoj preferencií pre $n-1$ mesiacov exponenciálnym vyrovnávaním a pre $n$-tý mesiac predikujeme rozdiel medzi preferenciami a prieskumom v $(n-1)$-om mesiaci. Keď tieto dva vektory sčítame, dostaneme výslednú predikciu.
+
+\newpage
+
+Môžeme teda predikovať výsledky volieb, keby sa konali v decembri 2024:
+
+\vspace{0.5cm}
+\begin{tabular}{lrr}
+	\toprule
+	politická strana &  \parbox{3.5cm}{\raggedleft volebný výsledok \\ 12-2024} & \parbox{5cm}{\raggedleft poslancov v parlamente \\ 12-2024} \\
+	\midrule
+	Demokrati & 3.51 & 0 \\
+	Hlas SD & 11.29 & 19 \\
+	KDH & 9.68 & 16 \\
+	Maďarská aliancia & 3.69 & 0 \\
+	Slovensko & 7.38 & 12 \\
+	Progresívne Slovensko & 24.15 & 42 \\
+	Republika & 7.04 & 12 \\
+	SaS & 10.12 & 17 \\
+	Sme rodina & 2.36 & 0 \\
+	Smer SD & 18.68 & 32 \\
+	SNS & 2.11 & 0 \\
+	\bottomrule
+\end{tabular}
+\vspace{0.5cm}
+
+Takisto môžeme predikovať výsledky volieb, keby sa konajú v máji 2025:
+
+\vspace{0.5cm}
+\begin{tabular}{lrr}
+	\toprule
+	politická strana &  \parbox{3.5cm}{\raggedleft volebný výsledok \\ 05-2025} & \parbox{5cm}{\raggedleft poslancov v parlamente \\ 05-2025} \\
+	\midrule
+	Demokrati & 3.77 & 0 \\
+	Hlas SD & 10.98 & 19 \\
+	KDH & 9.65 & 16 \\
+	Maďarská aliancia & 3.28 & 0 \\
+	Slovensko & 7.31 & 12 \\
+	Progresívne Slovensko & 24.90 & 43 \\
+	Republika & 6.87 & 11 \\
+	SaS & 10.37 & 17 \\
+	Sme rodina & 2.37 & 0 \\
+	Smer SD & 18.46 & 32 \\
+	SNS & 2.03 & 0 \\
+	\bottomrule
+\end{tabular}
+\vspace{0.5cm}
+
+Osobnú interpretáciu a zhodnotenie týchto predikovaných výsledkov nechávame na čitateľa.
 	
 \end{document}

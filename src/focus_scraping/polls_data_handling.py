@@ -16,6 +16,7 @@ def subtract_month(date_str: str) -> str:
 
 
 def closest_date_before(date_str: str, dates: list[str]) -> str:
+    # gets closest date before `date_str` in `dates`
     compare_date_obj: datetime = datetime.strptime(date_str, "%Y-%m-%d")
     
     closest_date: str = None
@@ -29,6 +30,7 @@ def closest_date_before(date_str: str, dates: list[str]) -> str:
 
 
 def join_all_polls_data() -> None:
+    # joins polls data stored in various formats (scrapping, by hand...) into one clean dataframe
     def try_convert_float(value):
         try:
             return float(value)
@@ -40,7 +42,6 @@ def join_all_polls_data() -> None:
     
     polls2: pd.DataFrame = pd.read_csv("data/raw/polls/polls_by_hand_older.csv", na_values="NA")
     polls3: pd.DataFrame = pd.read_csv("data/raw/polls/polls_by_hand_newer.csv", na_values="NA")
-
         
     polls_by_hand = pd.merge(polls1, polls2, on="political_party", how="outer")
     polls_by_hand = pd.merge(polls_by_hand, polls3, on="political_party", how="outer")
@@ -62,22 +63,20 @@ def join_all_polls_data() -> None:
         all_polls[missing] = np.nan
     
     sorted_columns: list[str] = sorted(all_polls.columns[1:], key = lambda c: datetime.strptime(c, "%Y-%m-%d"))
-
     all_polls = all_polls.reindex(columns=["political_party"] + sorted_columns)   
 
     for col in all_polls.columns[1:]:
         all_polls[col] = all_polls[col].astype(float)
-    
     all_polls.iloc[:, 1:] = all_polls.iloc[:, 1:].interpolate(method="linear", axis=1).round(1)
     
     convert_time = lambda t: datetime.strptime(t, "%Y-%m-%d").strftime("%Y-%m") if t != "political_party" else t
-    
     all_polls = all_polls.rename(columns=convert_time)
     
     all_polls.to_csv("data/polls_data.csv", index=False, quotechar='"', quoting=csv.QUOTE_NONNUMERIC, na_rep="NA")
 
 
 def election_result(party: str, election_date: str, elections_df: pd.DataFrame) -> float:
+    # gets election result of passed party in given election
     election_year: str = election_date[:election_date.find("-")]
     
     try:
@@ -87,6 +86,7 @@ def election_result(party: str, election_date: str, elections_df: pd.DataFrame) 
 
 
 def get_all_missing_polls(df) -> None:
+    # gets strings of all months from which we did not found any election polls
     last_poll = "2024-11-01"
     first_poll = "2010-01-01"
     
@@ -102,7 +102,22 @@ def get_all_missing_polls(df) -> None:
     return missing
 
 
+def remove_failed_scraped_data() -> None:
+    # removes data that were badly scraped
+    failed_focus_scrapes: list[str] = [
+        "2010-08-01", "2010-11-01", "2011-10-01", "2012-03-01", "2013-12-01", 
+        "2014-04-01", "2015-03-01", "2016-01-01", "2016-05-01", "2017-08-01", 
+        "2017-12-01", "2018-08-01", "2019-05-01", "2020-08-01", "2020-03-01", 
+        "2021-12-01", "2022-05-01", "2023-12-01", "2024-07-01", "2024-11-01"
+        ]
+    
+    focus_polls: pd.DataFrame = pd.read_csv("data/raw/polls/focus_polls.csv", na_values="NA")
+    focus_polls = focus_polls.drop(columns=failed_focus_scrapes)
+    focus_polls.to_csv("data/raw/polls/focus_polls.csv", index=False, quotechar='"', quoting=csv.QUOTE_NONNUMERIC, na_rep="NA")
+
+
 def add_missing_polls() -> None:
+    # add polls collected by hand (replacement for badly scraped polls)
     polls_updated: pd.DataFrame = pd.read_csv("data/raw/polls/focus_polls_updated.csv", na_values="NA")
     def rename_cols(col):
         if col == "political_party": return col
@@ -111,10 +126,10 @@ def add_missing_polls() -> None:
     
     polls_updated = polls_updated.rename(columns=rename_cols)
     
-    """# keep poll closer to election 2023
+    """# two polls in september 2023, keep poll closer to election 2023
     polls_updated = polls_updated.drop(columns="2023.1-09-01")"""
 
-    # keep poll one month after august 2023 poll
+    # two polls in september 2023, keep poll one month after august 2023 poll
     polls_updated = polls_updated.drop(columns="2023-09-01").rename(columns={"2023.1-09-01": "2023-09-01"})   
     
     polls_incomplete: pd.DataFrame = pd.read_csv("data/raw/polls/polls_incomplete.csv", na_values="NA")
@@ -128,20 +143,8 @@ def add_missing_polls() -> None:
     polls_incomplete.to_csv("data/raw/polls/focus_polls.csv", index=False, quotechar='"', quoting=csv.QUOTE_NONNUMERIC, na_rep="NA")
 
 
-def remove_failed_scraped_data() -> None:
-    failed_focus_scrapes: list[str] = [
-        "2010-08-01", "2010-11-01", "2011-10-01", "2012-03-01", "2013-12-01", 
-        "2014-04-01", "2015-03-01", "2016-01-01", "2016-05-01", "2017-08-01", 
-        "2017-12-01", "2018-08-01", "2019-05-01", "2020-08-01", "2020-03-01", 
-        "2021-12-01", "2022-05-01", "2023-12-01", "2024-07-01", "2024-11-01"
-        ]
-    
-    focus_polls: pd.DataFrame = pd.read_csv("data/raw/polls/focus_polls.csv", na_values="NA")
-    focus_polls = focus_polls.drop(columns=failed_focus_scrapes)
-    focus_polls.to_csv("data/raw/polls/focus_polls.csv", index=False, quotechar='"', quoting=csv.QUOTE_NONNUMERIC, na_rep="NA")
-    
-
 def create_polls_agencies_table() -> None:
+    # create table that stores agencies for each used poll
     focus_polls: pd.DataFrame = pd.read_csv("data/raw/polls/focus_polls.csv")
     data_focus = {
         "poll_month": list(focus_polls.columns[1:]),
@@ -182,6 +185,9 @@ def create_polls_agencies_table() -> None:
     
 
 def split_polls_by_election() -> None:
+    # create dataset in which every political party has their result in a particular election 
+    # and their polls 12 months before election, 
+    # along with whether they were in coalition/opposition before the election
     election_dates: list[str] = ("2023-09-30", "2020-02-29", "2016-03-05", "2012-03-10")
     polls: pd.DataFrame = pd.read_csv("data/raw/polls/focus_polls.csv", na_values="NA")
     polls_dates: list[str] = list(polls.columns)[1:]
@@ -231,6 +237,7 @@ def split_polls_by_election() -> None:
 
 
 def make_train_test_datasets() -> None:
+    # make train and test datasets to be used later
     polls = pd.read_csv("data/polls_by_election.csv", na_values="NA")
     
     threshold = 1.5
@@ -244,7 +251,6 @@ def make_train_test_datasets() -> None:
     
     polls_train.to_csv("data/polls_by_election_train.csv", index=False, quotechar='"', quoting=csv.QUOTE_NONNUMERIC, na_rep="NA")
     polls_test.to_csv("data/polls_by_election_test.csv", index=False, quotechar='"', quoting=csv.QUOTE_NONNUMERIC, na_rep="NA")
-    
     
     
 if __name__ == "__main__":
