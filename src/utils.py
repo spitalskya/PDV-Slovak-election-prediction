@@ -25,7 +25,10 @@ def join_dfs(main_data: pd.DataFrame, data_general: pd.DataFrame) -> pd.DataFram
 
 
 def join_dfs_with_diff(main_data: pd.DataFrame, data_general: pd.DataFrame) -> pd.DataFrame:
-    """function to join 'general data' and 'polls_by_election' """
+    """function to join 'general data' and 'polls_by_election' 
+    same as join_dfs(), but also adds variables corresponding to difference of values of indicators at
+    the end and at the beginning of electoral term
+    """
 
     main_data["election_date"] = pd.to_datetime(main_data["election_date"]) # make a date format from string
     main_data["year"] = main_data["election_date"].dt.year # new column year
@@ -52,9 +55,10 @@ def join_dfs_with_diff(main_data: pd.DataFrame, data_general: pd.DataFrame) -> p
         
         get_data_from_previous_election = lambda x: data_general[data_general["indicator"] == variable][str(previous_election[x])].iloc[0]
         
-        for election_year in previous_election:
+        for election_year in previous_election: # add difference
             data_general_long[variable + " diff"] = data_general_long[variable]
             data_general_long.loc[data_general_long["year"] == election_year, variable + " diff"] -= get_data_from_previous_election(election_year)
+        
         main_data = pd.merge(main_data, data_general_long[['year', variable]], on='year', how='left') # merge two dfs
 
     return main_data
