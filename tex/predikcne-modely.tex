@@ -60,7 +60,7 @@ Spomenieme ešte nadstavbu na tento model s názvom SARIMA, ktorá pracuje aj so
 
 \subsubsection{Výber modelu}
 
-Metodiku výberu modelu sme volili s ohľadom na to, že chceme predikovať volebný výsledok, keby sú voľby v blízkej budúcnosti. Preto sme chceli, aby čo najlepšie zachytil vývoj preferencií pred poslednými voľbami v roku 2023 pre strany, ktoré sú \enquote{relevantné} na terajšej politickej scéne. Konkrétne sú to Progresívne Slovensko, Smer-SD, Hlas-SD, Slovensko, SaS, KDH, Republika, SNS, Sme rodina a Maďarská aliancia. Politickú stranu Demokrati sme do tejto skupiny na výber modelu nepridali, keďže vznikli iba tesne pred voľbami v roku 2023. 
+Metodiku výberu modelu sme volili s ohľadom na to, že chceme predikovať volebný výsledok, keby sú voľby v blízkej budúcnosti. Preto sme chceli, aby čo najlepšie zachytil vývoj preferencií pred poslednými voľbami v roku 2023 pre strany, ktoré sú \enquote{relevantné} na terajšej politickej scéne. Konkrétne sú to Progresívne Slovensko, Smer SD, Hlas SD, Slovensko, SaS, KDH, Republika, SNS, Sme rodina a Maďarská aliancia. Politickú stranu Demokrati sme do tejto skupiny na výber modelu nepridali, keďže vznikli iba tesne pred voľbami v roku 2023. 
 
 Model vyberáme na základe toho, ako dobre predikuje vývoj volebných preferencií pre 10 spomenutých subjektov. Každý z týchto časových radov rozdelíme na trénovaciu a testovaciu časť, kde testovacia časť pozostáva z posledných 12 zložiek (rok pred voľbami). Následne, pre trénovací časový rad, spočítame rôznymi modelmi predikciu pre 12 ďalších mesiacov a spočítame strednú kvadratickú chybu vzhľadom na testovací \enquote{rok}. Model s najnižšou priemernou chybou použijeme na predikciu volieb. 
 
