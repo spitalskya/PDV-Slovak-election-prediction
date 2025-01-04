@@ -32,7 +32,7 @@ Hodnota $s_t$ je \enquote{vyhladený} časový rad v čase $t$, $\alpha$ je jedi
 	b_t &= \beta (s_t - s_{t-1}) + (1-\beta)b_{t-1} & \text{pre}~t&>0 
 \end{align*}
 
-Takýto model s parametrami $\alpha$ a $\beta$ vieme využiť na predikovanie budúcich hodnôt, ktoré vudú vykazovať lineárny trend.
+Takýto model s parametrami $\alpha$ a $\beta$ vieme využiť na predikovanie budúcich hodnôt, ktoré budú vykazovať lineárny trend.
 
 Teória aj označenie v tejto sekcii boli čerpané z: \href{https://en.wikipedia.org/wiki/Exponential_smoothing#}{Exponential smoothing}.
 
@@ -46,7 +46,7 @@ Moving-average model stupňa $q$ predikuje hodnotu v čase $t$ naslovne:
 	X_t = \mu + \varepsilon_t + \sum_{i=1}^{q}\beta_i\varepsilon_{t-i}
 \end{equation*}
 
-Hodnota $\mu$ je stredná hodnota časového radu, $\beta_1,\dots, \beta_2$ sú parametre modelu a $\varepsilon_i$ reprezentuje šum v čase $i$ (zdroj \href{http://www.iam.fmph.uniba.sk/institute/stehlikova/cr19/arima1.html#maq-proces-vyssieho-radu}{Beáta Stehlíková: ARIMA modely, časť 1}). $\operatorname{ARMA}(p, q)$ vyzerá teda nasledovne:
+Hodnota $\mu$ je stredná hodnota časového radu, $\beta_1,\dots, \beta_q$ sú parametre modelu a $\varepsilon_i$ reprezentuje šum v čase $i$ (zdroj \href{http://www.iam.fmph.uniba.sk/institute/stehlikova/cr19/arima1.html#maq-proces-vyssieho-radu}{Beáta Stehlíková: ARIMA modely, časť 1}). $\operatorname{ARMA}(p, q)$ vyzerá teda nasledovne:
 
 \begin{equation*}
 	X_t = c + \sum_{i=1}^{p}\alpha_i X_{t-i} + \varepsilon_t + \sum_{i=1}^{q}\beta_i\varepsilon_{t-i}
