@@ -4,7 +4,7 @@
 	
 \section{Predikcie volieb}	
 
-V tejto sekcií ukážeme výsledky nadizajnovaného modelu v sekcií \ref{sec:models}. Chceme predikovať výsledky volieb, keby sa konajú o mesiac a o 6 mesiacov od novembra 2024 (mesiac posledných nami zozbieraných údajov z prieskumov). Treba poznamenať, že budeme modelovať volebný výsledok iba pre nasledovné \enquote{relevantné} strany (v prieskumoch agentúry Focus majú za november aspoň 3\%) --  Progresívne Slovensko, Smer-SD, Hlas-SD, Slovensko, SaS, KDH, Republika, SNS, Sme rodina, Maďarská aliancia a Demokrati.
+V tejto sekcií ukážeme výsledky nadizajnovaného modelu zo sekcie \ref{sec:models}. Chceme predikovať výsledky volieb, keby sa konajú o mesiac a o 6 mesiacov od novembra 2024 (mesiac posledných nami zozbieraných údajov z prieskumov). Treba poznamenať, že budeme modelovať volebný výsledok iba pre nasledovné \enquote{relevantné} strany (v prieskumoch agentúry Focus majú za november aspoň 3\%) --  Progresívne Slovensko, Smer-SD, Hlas-SD, Slovensko, SaS, KDH, Republika, SNS, Sme rodina, Maďarská aliancia a Demokrati.
 
 Náš model sa skladá z dvoch častí:
 
@@ -20,62 +20,84 @@ Náš model sa skladá z dvoch častí:
 	Parameter $\hat{\beta} \in \mathbb{R}^4$ pre lineárnu regresiu natrénujeme zo všetkých dostupných dát (ich tvar je opísaný vyššie) pre vyššie spomenutých 10 politických strán
 \end{itemize}
 
-Môžeme uviesť, že natrénovaný parameter $\hat{\beta}$ na naškálovných dátach (nulový priemer, jednotková variancia) mal nasledovný tvar:
+Pre Holtovo dvojité exponenciálne vyrovnávanie natrénované parametre vyšli nasledovne:
+
+\vspace{0.5cm}
+\begin{center}
+\begin{tabular}{lrr}
+	\toprule
+	politická strana &  $\alpha$ & $\beta$ \\
+	\midrule
+	Progresívne Slovensko & 0.909 & 0.018 \\
+	Smer SD & 0.68 & 0.1 \\
+	Hlas SD & 0.98 & 0 \\
+	SaS & 0.57 &  0.39 \\
+	KDH & 0.4 & 0.12 \\
+	Slovensko & 0.79 & 0 \\
+	Republika & 0.89 & 0.003 \\
+	Maďarská aliancia & 0.5 & 0 \\
+	Demokrati & 0.71 & 0.01 \\
+	Sme rodina & 0.82 & 0 \\
+	SNS & 0.67 & 0 \\
+	\bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.5cm}
+
+Medzi zaujímavé výsledky môžeme uviesť vysoké hodnoty parametra $\alpha$ pre Progresívne Slovensko a Hlas SD, čo indikuje vysokú kolísavosť dát a teda pri vyhladzovaní časového radu je dôležitá aktuálna hodnota. Na druhej strane prevažne nízke hodnoty parametra $\beta$ naznačujú, že vyhladzovaný trend je upravovaný pomaly, čiže pre inú ako \enquote{horizontálnu} predikciu vývoja preferencií by mala strana vykazovať očividný stúpajúci alebo klesajúci trend pred voľbami.
+
+Pri lineárnej regresii, natrénovaný parameter $\hat{\beta}$ na naškálovných dátach (nulový priemer, jednotková variancia) mal nasledovný tvar:
 
 \begin{equation*}
 	\hat{\beta} = (0.806, 0.305, 1.88, 0.192)
 \end{equation*}
 
-Vidíme teda že všetky tri premenné majú pozitívny vplyv na predikciu, čiže ich zvýšenie predpokladá, že strana dosiahne vo voľbách vyšší výsledok, ako mala v prieskume pred voľbami. Najstrmší vplyv má interakcia medzi účasťou v opozícii a hodnotou výdavkov na dôchodky (na človeka).
+Vidíme teda že všetky tri premenné majú pozitívny vplyv na predikciu, čiže ich zvýšenie predpokladá, že strana dosiahne vo voľbách vyšší výsledok, ako mala v prieskume pred voľbami. Najstrmší vplyv má interakcia medzi účasťou v opozícii a hodnotou výdavkov na dôchodky (na človeka). Tento fakt naznačuje, že opozičné strany by mohli mať skok dohora medzi výsledkami v prieskumoch a vo voľbách vyšší pri zvyšujúcich sa výdavkoch na dôchodky. Takisto z výsledkov vidíme koreláciu medzi konzervatívnosťou strany v koalícii s tým, že vo voľbách získava viac percent, ako predpokladajú prieskumy. Ešte spomenieme, že pre model bez dát z politického kompasu bol predikovaný sklon vplyvu toho, či strana bola v opozícii, pozitívny. Teda môžeme predpokladať, že opozičným stranám sa darí vo voľbách viac, ako predpokladajú prieskumy.
 
 
-Pre predikciu volieb o $n$ mesiacov modelujeme vývoj preferencií pre $n-1$ mesiacov exponenciálnym vyrovnávaním a pre $n$-tý mesiac predikujeme rozdiel medzi preferenciami a prieskumom v $(n-1)$-om mesiaci. Keď tieto dva vektory sčítame, dostaneme výslednú predikciu.
+Pre predikciu volieb o $n$ mesiacov modelujeme vývoj preferencií pre $n-1$ mesiacov exponenciálnym vyrovnávaním a pre $n$-tý mesiac predikujeme rozdiel medzi preferenciami a prieskumom v $(n-1)$-om mesiaci. Sčítaním dostávame výslednú predikciu.
 
-\newpage
 
-Môžeme teda predikovať výsledky volieb, keby sa konali v decembri 2024:
+Môžeme predikovať výsledky volieb, keby sa konali v decembri 2024 a v máji 2025:
 
-\vspace{0.5cm}
+\begin{center}
+	\small
 \begin{tabular}{lrr}
 	\toprule
 	politická strana &  \parbox{3.5cm}{\raggedleft volebný výsledok \\ 12-2024} & \parbox{5cm}{\raggedleft poslancov v parlamente \\ 12-2024} \\
 	\midrule
-	Demokrati & 3.51 & 0 \\
-	Hlas SD & 11.29 & 19 \\
-	KDH & 9.68 & 16 \\
-	Maďarská aliancia & 3.69 & 0 \\
-	Slovensko & 7.38 & 12 \\
 	Progresívne Slovensko & 24.15 & 42 \\
-	Republika & 7.04 & 12 \\
-	SaS & 10.12 & 17 \\
-	Sme rodina & 2.36 & 0 \\
 	Smer SD & 18.68 & 32 \\
+	Hlas SD & 11.29 & 19 \\
+	SaS & 10.12 & 17 \\
+	KDH & 9.68 & 16 \\
+	Slovensko & 7.38 & 12 \\
+	Republika & 7.04 & 12 \\
+	Maďarská aliancia & 3.69 & 0 \\
+	Demokrati & 3.51 & 0 \\
+	Sme rodina & 2.36 & 0 \\
 	SNS & 2.11 & 0 \\
 	\bottomrule
 \end{tabular}
-\vspace{0.5cm}
 
-Takisto môžeme predikovať výsledky volieb, keby sa konajú v máji 2025:
-
-\vspace{0.5cm}
 \begin{tabular}{lrr}
 	\toprule
 	politická strana &  \parbox{3.5cm}{\raggedleft volebný výsledok \\ 05-2025} & \parbox{5cm}{\raggedleft poslancov v parlamente \\ 05-2025} \\
 	\midrule
-	Demokrati & 3.77 & 0 \\
-	Hlas SD & 10.98 & 19 \\
-	KDH & 9.65 & 16 \\
-	Maďarská aliancia & 3.28 & 0 \\
-	Slovensko & 7.31 & 12 \\
 	Progresívne Slovensko & 24.90 & 43 \\
-	Republika & 6.87 & 11 \\
-	SaS & 10.37 & 17 \\
-	Sme rodina & 2.37 & 0 \\
 	Smer SD & 18.46 & 32 \\
+	Hlas SD & 10.98 & 19 \\
+	SaS & 10.37 & 17 \\
+	KDH & 9.65 & 16 \\
+	Slovensko & 7.31 & 12 \\
+	Republika & 6.87 & 11 \\
+	Maďarská aliancia & 3.28 & 0 \\
+	Demokrati & 3.77 & 0 \\
+	Sme rodina & 2.37 & 0 \\
 	SNS & 2.03 & 0 \\
 	\bottomrule
 \end{tabular}
-\vspace{0.5cm}
+\end{center}
 
 Osobnú interpretáciu a zhodnotenie týchto predikovaných výsledkov nechávame na čitateľa.
 	

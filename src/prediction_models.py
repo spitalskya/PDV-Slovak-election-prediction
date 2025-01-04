@@ -63,8 +63,8 @@ def choose_polls_prediction_model() -> None:
         test_length: int = 6
         train, test = polls_time_series[:-test_length], polls_time_series[-test_length:]
 
-        for alpha in np.linspace(0.01, 1, 10):
-            for beta in np.linspace(0.01, 1, 10):
+        for alpha in np.linspace(0.01, 0.99, 10):
+            for beta in np.linspace(0.01, 0.99, 10):
                 # fit the model with chosen parameters
                 model: Holt = Holt(train)
                 model = model.fit(smoothing_level=alpha, smoothing_trend=beta, optimized=False)

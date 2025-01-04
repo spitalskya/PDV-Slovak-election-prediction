@@ -11,4 +11,5 @@ __pycache__
 *.nav
 *.snm
 *.vrb
+*.gz
 tex/*.log

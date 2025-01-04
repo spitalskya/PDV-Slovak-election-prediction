@@ -5,13 +5,13 @@
 \section{Predikčné modely}	
 \label{sec:models}
 
-Úlohu predikovania volebného výsledku môžeme rozdeliť na dve časti. Prvá je modelovanie vývoja volebných preferencii politických strán. Druhý aspekt je predikovanie skutočného výsledku volieb na základe posledného prieskumu preferencií. Je očakávateľné, že percentuálny zisk vo voľbách je väčšinou blízky percentám v prieskume mesiac pred voľbami, no história slovenských volieb ukázala, že to nie vždy platí. Budeme sa teda snažiť nájsť relevantné charakteristiky, pomocou ktorých budeme modelovať tento rozdiel. 
+Úlohu predikovania volebného výsledku môžeme rozdeliť na dve časti. Prvá je modelovanie vývoja volebných preferencií politických strán. Druhý aspekt je predikovanie skutočného výsledku volieb na základe posledného prieskumu preferencií. V sekcii \ref{sec:explore} sme videli, že percentuálny zisk vo voľbách je väčšinou blízky percentám v prieskume mesiac pred voľbami, no história slovenských volieb ukázala, že to nie vždy platí. Budeme teda stavať na pozorovaniach z exploratívnej analýzy a trénovať model, ktorý bude predikovať tento rozdiel a skúsiť pomocou neho vysvetliť toto netriviálne správanie. 
 
 \subsection{Predikovanie vývoja volebných preferencií}
 
-V tejto časti budeme pracovať s priekumami volebných preferencií politických strán a hnutí od januára v roku 2010 do novembra v roku 2024. Pre každý z 81 politických subjektov máme teda 179 údajov v percentách o ich preferenciách. 
+V tejto časti budeme pracovať s prieskumami volebných preferencií politických strán a hnutí od januára v roku 2010 do novembra v roku 2024. Pre každý z 81 politických subjektov máme 179 údajov v percentách o ich preferenciách. 
 
-Budeme sa teda na tieto dáta pozerať ako na časové rady, kde rozostupy jednotlivých údajov sú 1 mesiac. Tiež budeme modelovať vývoj preferencií pre každú stranu samostatne, teda náš model predpokladá, že preferencie strán sú vzájomne nezávislé. Porvnáme prístupy k modelovaniu časových radov, konkrétne Holtovo dvojité exponenciálne vyrovnávanie a ARIMA model.
+Budeme sa teda na tieto dáta pozerať ako na časové rady, kde rozostupy jednotlivých údajov sú 1 mesiac. Tiež budeme modelovať vývoj preferencií pre každú stranu samostatne, teda náš model predpokladá, že preferencie strán sú vzájomne nezávislé. Porovnáme prístupy k modelovaniu časových radov, konkrétne Holtovo dvojité exponenciálne vyrovnávanie a ARIMA model.
 
 
 \subsubsection{Teória -- Holtovo dvojité exponenciálne vyrovnávanie} 
@@ -32,13 +32,15 @@ Hodnota $s_t$ je \enquote{vyhladený} časový rad v čase $t$, $\alpha$ je jedi
 	b_t &= \beta (s_t - s_{t-1}) + (1-\beta)b_{t-1} & \text{pre}~t&>0 
 \end{align*}
 
-Takýto model s parametrami $\alpha$ a $\beta$ vieme využiť na predikovanie budúcich hodnôt. Tieto predikcie budú mať lineárny trend.
+Takýto model s parametrami $\alpha$ a $\beta$ vieme využiť na predikovanie budúcich hodnôt, ktoré vudú vykazovať lineárny trend.
 
-Teória aj označenie čerpané z: \href{https://en.wikipedia.org/wiki/Exponential_smoothing#}{Exponential smoothing}.
+Teória aj označenie v tejto sekcii boli čerpané z: \href{https://en.wikipedia.org/wiki/Exponential_smoothing#}{Exponential smoothing}.
 
 \subsubsection{Teória -- ARIMA} 
 
-Model pre predikciu časových radov ARIMA je nadstavbou pre model ARMA -- autoregressive moving-average. Autoregresívna časť indikuje, že predikujeme premennú na základe jej hodnôt v minulosti. Tento prístup však vyžaduje stacionaritu, teda, neformálne, stredná hodnota a autokovariancia (kovariancia časového radu samého so sebou) a časového radu musia byť konštantné/nezávislé od času a variancia musí byť všade konečná. Moving-average model stupňa $q$ predikuje hodnotu v čase $t$ naslovne:
+Model pre predikciu časových radov ARIMA je nadstavbou pre model ARMA -- autoregressive moving-average. Autoregresívna časť indikuje, že predikujeme premennú na základe jej hodnôt v minulosti. Tento prístup však vyžaduje stacionaritu, teda (neformálne) stredná hodnota a autokovariancia (kovariancia časového radu samého so sebou) časového radu musia byť konštantné/nezávislé od času a jeho variancia musí byť všade konečná. 
+
+Moving-average model stupňa $q$ predikuje hodnotu v čase $t$ naslovne:
 
 \begin{equation*}
 	X_t = \mu + \varepsilon_t + \sum_{i=1}^{q}\beta_i\varepsilon_{t-i}
@@ -50,17 +52,19 @@ Hodnota $\mu$ je stredná hodnota časového radu, $\beta_1,\dots, \beta_2$ sú 
 	X_t = c + \sum_{i=1}^{p}\alpha_i X_{t-i} + \varepsilon_t + \sum_{i=1}^{q}\beta_i\varepsilon_{t-i}
 \end{equation*}
 
-Parametre $\alpha_1,\dots,\alpha_p$ sú parametre pre autoregresívnu časť a parameter $c$ \enquote{slúži} na vertikálny posun. Ako sme spomínali, takýto model vyžaduje stacionaritu časového radu. Na eliminovanie trendu (a teda na dosiahnutie stacionarity) v dátach slúži diferencovanie časového radu -- namiesto $X_t$ modelujeme $Y_t = X_t - X_{t-1}$. Tento proces opakujeme $d$-krát, čo nám dáva integrovaný model $\operatorname{I}(d)$. 
+Parametre $\alpha_1,\dots,\alpha_p$ sú parametre pre autoregresívnu časť a parameter $c$ \enquote{slúži} na vertikálny posun. Ako sme spomínali, takýto model vyžaduje stacionaritu časového radu. Na eliminovanie trendu (a teda na dosiahnutie stacionarity) v dátach sa používa diferencovanie -- namiesto $X_t$ modelujeme $Y_t = X_t - X_{t-1}$. Tento proces diferenciácie opakujeme $d$-krát, čo nám dáva integrovaný model $\operatorname{I}(d)$. 
 
 Spojením týchto troch modelov dostávame model $\operatorname{ARIMA}(p,d,q)$ -- autoregressive integrated moving-average.
 
-Spomenieme ešte nadstavbu na tento model s názvom SARIMA, ktorá pracuje aj so sezónalitou v časových radoch. Keďže sezónnosť sme v našich dátach nepozorovali, rozhodli sme sa nepredikovať týmto modelom. 
+Spomenieme ešte nadstavbu na tento model s názvom SARIMA, ktorá pracuje aj so sezónnosťou v časových radoch. Keďže tento trend sme v našich dátach nepozorovali, rozhodli sme sa nepredikovať týmto modelom. 
 
 \subsubsection{Výber modelu}
 
-Metodiku výberu modelu sme volili s ohľadom na to, že chceme predikovať volebný výsledok, keby sú voľby v blízkej budúcnosti. Preto sme chceli, aby čo najlepšie zachytil vývoj preferencií pred poslednými voľbami v roku 2023 pre strany, ktoré sú \enquote{relevantné} na terajšej politickej scéne. Konkrétne sú to Progresívne Slovensko, Smer-SD, Hlas-SD, Slovensko, SaS, KDH, Republika, SNS, Sme rodina a Maďarská aliancia. Politickú stranu Demokrati sme do tejto skupiny nepridali, keďže vznikli iba tesne pred voľbami v roku 2023. 
+Metodiku výberu modelu sme volili s ohľadom na to, že chceme predikovať volebný výsledok, keby sú voľby v blízkej budúcnosti. Preto sme chceli, aby čo najlepšie zachytil vývoj preferencií pred poslednými voľbami v roku 2023 pre strany, ktoré sú \enquote{relevantné} na terajšej politickej scéne. Konkrétne sú to Progresívne Slovensko, Smer-SD, Hlas-SD, Slovensko, SaS, KDH, Republika, SNS, Sme rodina a Maďarská aliancia. Politickú stranu Demokrati sme do tejto skupiny na výber modelu nepridali, keďže vznikli iba tesne pred voľbami v roku 2023. 
 
-Model vyberáme teda na základe toho, ako dobre predikuje vývoj volebných preferencií pre 10 spomenutých subjektov. Každý z týchto časových radov rozdelíme na trénovaciu a testovaciu časť, kde testovacia časť pozostáva z posledných 12 zložiek. Následne, pre trénovací časový rad spočítame rôznymi modelmi predikciu pre 12 ďalších mesiacov a spočítame strednú kvadratickú chybu vzhľadom na testovací \enquote{rok}. Model s najnižšou priemernou chybou použijeme na predikciu volieb. 
+Model vyberáme na základe toho, ako dobre predikuje vývoj volebných preferencií pre 10 spomenutých subjektov. Každý z týchto časových radov rozdelíme na trénovaciu a testovaciu časť, kde testovacia časť pozostáva z posledných 12 zložiek (rok pred voľbami). Následne, pre trénovací časový rad, spočítame rôznymi modelmi predikciu pre 12 ďalších mesiacov a spočítame strednú kvadratickú chybu vzhľadom na testovací \enquote{rok}. Model s najnižšou priemernou chybou použijeme na predikciu volieb. 
+
+\newpage
 
 Modely budeme testovať tri:
 
@@ -71,7 +75,7 @@ Modely budeme testovať tri:
 		\item parametre $(p,q)$ nastavíme tak, aby minimalizovali Akaikeho informačné kritérium
 	\end{itemize}
 	\item Holtovo dvojité vyrovnávanie, ktorého parametre $\alpha$ a $\beta$ budú nastavené metódou maximálnej vierohodnosti (funkciou \pyth|statsmodels.tsa.api.Holt.fit|)
-	\item Holtovo dvojité vyrovnávanie, ktorého parametre $\alpha \in [0.1;10] $ a $\beta \in [0.1;10]$ budú nastavené z dát okrem posledných 6 mesiacov tak, aby minimizalizovali strednú kvadratickú chybu predikcie posledných 6 mesiacov
+	\item Holtovo dvojité vyrovnávanie, ktorého parametre $\alpha \in [0.1;1) $ a $\beta \in [0.1;1)$ budú nastavené z dát okrem posledných 6 mesiacov tak, aby minimizalizovali strednú kvadratickú chybu predikcie posledných 6 mesiacov
 \end{enumerate}
 
 Priemerné chyby vyšli nasledovne:
@@ -79,25 +83,27 @@ Priemerné chyby vyšli nasledovne:
 \begin{align*}
 	\operatorname{err}_{\operatorname{ARIMA}} &= 9.55 \\
 	\operatorname{err}_{\operatorname{Holt, MLE}} &= 8.92 \\
-	\operatorname{err}_{\operatorname{Holt, MSE}} &= 11.99
+	\operatorname{err}_{\operatorname{Holt, MSE}} &= 12.01
 \end{align*}
 
-Výsledný predikčný model bude teda predikovať vývoj preferencií politickej strany Holtovým dvojitým exponenciálnym vyrovnávaním. Parametre $\alpha$ a $\beta$ budú nastavené pomocou metódy maximálnej vierohodnosti na dátach preferencií danej strany v období od januára 2010 do novembra 2024.
+Výsledný predikčný model bude teda predikovať vývoj preferencií politickej strany Holtovým dvojitým exponenciálnym vyrovnávaním. Jej parametre $\alpha$ a $\beta$ budú nastavené pomocou metódy maximálnej vierohodnosti na preferenciách období od januára 2010 do novembra 2024.
 
 
 \subsection{Predikovanie rozdielu volebného výsledku a volebných preferencií v prieskume mesiac pred voľbami}
 
 V tejto časti opíšeme našu metodiku za výberom modelu na predikciu rozdielu volebného výsledku a volebných preferencií v prieskume mesiac pred voľbami. Budeme porovnávať obyčajnú lineárnu regresiu a dve jej penalizované verzie -- lasso a hrebeňová regresia.
 
-Budeme pracovať s podobnými dátami ako v kapitole o klasifikácii, ale vynecháme volebné preferencie z prieskumov, keďže rozdiel chceme predikovať na základe iných informácií o strane, ako jej podpora. Pre každú stranu a každé voľby od roku 2012 máme údaje, či bola v korešpondujúcom volebnom období v koalícii alebo opozícii (nadobúdajúce hodnoty 0 alebo 1). Pridáme stĺpce údajov rôznych indikátorov o štáte v období volieb spolu s rozdielmi hodnôt týchto indikátorov medzi koncom a začiatkom korešpondujúceho volebného obdobia. Takisto pridáme stĺpce interakcií medzi týmito premennými (aby sme zistili napríklad to, že strana bola v koalícii a počas toho volebného obdobia stúplo HDP na človeka, nemá vplyv na rozdiel volebného výsledku a posledného predvolebného prieskumu).
+Budeme pracovať s podobnými dátami ako v kapitole o klasifikácii, ale vynecháme volebné preferencie z prieskumov, keďže rozdiel chceme predikovať na základe iných informácií o strane, ako jej podpora. Pre každú stranu a každé voľby od roku 2012 máme údaje, či bola v korešpondujúcom volebnom období v koalícii alebo opozícii (nadobúdajúce hodnoty 0 alebo 1). Pridáme stĺpce údajov rôznych indikátorov o štáte v období volieb spolu s rozdielmi hodnôt týchto indikátorov medzi koncom a začiatkom korešpondujúceho volebného obdobia. Takisto pridáme stĺpce interakcií medzi týmito premennými (aby sme zistili napríklad či to, že strana bola v koalícii a počas toho volebného obdobia stúplo HDP na človeka, nemá vplyv na rozdiel volebného výsledku a posledného predvolebného prieskumu).
 
 \subsubsection{Výber modelu}
 
-Výber modelu uskutočníme na rovnakej trénovacej vzorke ako v kapitole vyššie, iba s niekoľkými pridanými premennými. Každý model budeme hodnotiť krosvalidáciou na 5 častí, pričom výsledná chyba modelu bude priemerná stredná kvadratická chyba. Predtým ale musíme vybrať podmnožinu stĺpcov pre lineárnu regresiu, resp. vybrať hyperparametre pre lasso a hrebeňovú regresiu. 
+Výber modelu uskutočníme na rovnakej trénovacej vzorke ako v kapitole vyššie, iba s niekoľkými vyššie-spomenutými pridanými premennými. Každý model budeme hodnotiť krosvalidáciou na 10 častí, pričom výsledná chyba modelu bude priemerná stredná kvadratická chyba jednotlivých častí krosvalidácie. Predtým je potrebné však vybrať podmnožinu stĺpcov pre lineárnu regresiu a vybrať hyperparameter $\lambda$ pre lasso a hrebeňovú regresiu. 
 
-Podmnožinu stĺpcov pre lineárnu regresiu budeme vyberať iteratívne vzhľadom na priemernú strednú kvadratickú chybu krosvalidácie. Najprv ohodnotíme model bez premenných, potom pre všetky premenné spočítame chybu a medzi vybrané premenné pridáme tú s minimálnou. Následne budeme modelovať s dvomi premennými -- prvá bude vybratá v predchádzajúcom kroku a ako druhú premennú vyskúšame všetky ostatné. Do ďalšieho kroku pôjde dvojica premenných s minimálnou priemernou krosvalidačnou chybou. Takto budeme pokračovať, kým nepoužijeme všetky premenné. Výsledná podmnožina stĺpcov bude tá, ktorá počas celého behu algortimu dosiahla najnižšiu chybu. Týmto algoritmom sme pre lineárnu regresiu vybrali iba jednu premennú a to indikátor, či strana bola vo volebnom období pred voľbami v opozícii.
+Podmnožinu stĺpcov pre lineárnu regresiu budeme vyberať pažravo iteratívne vzhľadom na priemernú strednú kvadratickú chybu krosvalidácie. Najprv ohodnotíme model bez premenných, potom pre všetky premenné spočítame chybu a medzi vybrané premenné pridáme tú s minimálnou. Následne budeme modelovať s dvomi premennými -- prvá bude tá vybratá v predchádzajúcom kroku a ako druhú premennú vyskúšame všetky ostatné. Do ďalšieho kroku pôjde dvojica premenných s minimálnou priemernou krosvalidačnou chybou. Takto budeme pokračovať, kým nepoužijeme všetky premenné. Výsledná podmnožina stĺpcov bude tá, ktorá počas celého behu algortimu dosiahla najnižšiu chybu. 
 
-Pre lasso a hrebeňovú regresiu je to jednoduchšie. Pre obe skúšame sto ekvidištančných hodnôt pre parameter $\lambda \in [0.1; 10]$, vyberieme tú s najnižšou priemernou krosvalidačnou chybou vzhľadom na strednú kvadratickú chybu. Pre lasso algoritmus vrátil $\lambda=0.3$, pre hrebeňovú regresiu $\lambda = 10$. 
+Týmto algoritmom sme pre lineárnu regresiu vybrali iba jednu premennú a to indikátor, či strana bola vo volebnom období pred voľbami v opozícii. 
+
+Pre lasso a hrebeňovú regresiu skúšame sto ekvidištančných hodnôt pre parameter $\lambda \in [0.1; 10]$, vyberieme tú s najnižšou priemernou krosvalidačnou chybou vzhľadom na strednú kvadratickú chybu. Pre lasso algoritmus vrátil $\lambda=0.3$, pre hrebeňovú regresiu $\lambda = 10$. 
 
 Nakoniec, pre finálne modelovanie spomedzi týchto troch modelov vyberieme ten s najnižšou krosvalidačnou chybou:
 
@@ -107,7 +113,7 @@ Nakoniec, pre finálne modelovanie spomedzi týchto troch modelov vyberieme ten 
 	\operatorname{err}_{\operatorname{ridge}} &= 9.32
 \end{align*}
 
-Budeme modelovať lineárnou regresiou s jedinou premennou -- účasť politickej strany v opozícii. Otestujeme na testovacích dátach spomenutých v kapitolách vyššie. Aby sme vedeli ohodnotiť našu predikciu, pozrieme sa na jej strednú kvadratickú a strednú absolútnu predikciu v porovnaní s naivným modelom, ktorý modeluje rozdiel volebného výsledku a posledného predvolebného prieskumu konštantnou nulou:
+Budeme teda modelovať lineárnou regresiou s jedinou premennou -- účasť politickej strany v opozícii. Otestujeme na testovacích dátach spomenutých v kapitole vyššie. Aby sme vedeli ohodnotiť našu predikciu, pozrieme sa na jej strednú kvadratickú a strednú absolútnu chybu v porovnaní s naivným modelom, ktorý modeluje rozdiel volebného výsledku a posledného predvolebného prieskumu konštantnou nulou:
 
 \begin{align*}
 	\operatorname{MSE}_{\operatorname{LR}} &= 7.24 \\
@@ -118,9 +124,11 @@ Budeme modelovať lineárnou regresiou s jedinou premennou -- účasť politicke
 
 Z výsledkov vidíme, že náš model lepšie zachytáva odľahlé dáta (teda veľký \enquote{skok} medzi posledným prieskumom a voľbami) ako model, ktorý predpokladá, že tam žiadny \enquote{skok} nie je. V absolútnej chybe je však mierne horší.
 
-Využijeme fakt, že pre \enquote{relevantné} strany v tejto dobe (január 2025) máme k dispozícii dáta z politického kompasu, ktoré hovoria veľa o profile a prioritách strany. Vytvoríme teda rovnaký model ako vyššie, len z trénovacej a testovacej sady odfiltrujeme strany, pre ktoré údaje nemáme. Jedná sa teda o výraznú redukciu počtu dát už z aj tak malého počtu, ale napriek tomu môžeme pozorovať správanie modelu.
+Využijeme fakt, že pre \enquote{relevantné} strany v tejto dobe (december 2024) máme k dispozícii dáta z politického kompasu, ktoré hovoria veľa o profile a prioritách strany. Vytvoríme teda rovnaký model ako vyššie, len z trénovacej a testovacej sady odfiltrujeme strany, pre ktoré tieto údaje nemáme. Jedná sa teda o výraznú redukciu počtu dát už z aj tak malého počtu, ale napriek tomu môžeme pozorovať správanie modelu.
 
-Znova nám vyšlo, že najnižšiu krosvalidačnú chybu dosiahla lineárna regresia, ale tentokrát s tromi premennými:
+\newpage
+
+Znovu nám vyšlo, že najnižšiu krosvalidačnú chybu dosiahla lineárna regresia, ale tentokrát s tromi premennými:
 
 \begin{enumerate}
 	\item interakcia medzi účasťou v koalícii a hodnotou liberálnosti/konzervatívnosti
@@ -128,7 +136,7 @@ Znova nám vyšlo, že najnižšiu krosvalidačnú chybu dosiahla lineárna regr
 	\item interakcia medzi nezamestnanosťou v percentách a HDP na človeka
 \end{enumerate}
 
-Spočítame znova chyby takéhoto a naivného modelu na (zredukovaných) testovacích dátach
+Spočítame znova chyby takéhoto a naivného modelu na (zredukovaných) testovacích dátach:
 
 \begin{align*}
 	\operatorname{MSE}_{\operatorname{LR}} &= 6.53 \\
@@ -137,7 +145,7 @@ Spočítame znova chyby takéhoto a naivného modelu na (zredukovaných) testova
 	\operatorname{MAE}_{\operatorname{naive}} &= 2.22
 \end{align*}
 
-Vidíme, že pri použití politického kompasu má náš model lepšiu aj MSE aj MAE oproti modelu, ktorý predpokladá, že volebný výsledok bude rovnaký, ako posledný prieskum. Keďže nás zaujíma najmä predikcia budúcich volieb a pre v tomto období relevantné strany máme údaje o politickom kompase, budeme teda vo finálnom modely používať túto verziu.
+Vidíme, že pri použití politického kompasu má náš model lepšiu aj MSE aj MAE oproti modelu, ktorý predpokladá, že volebný výsledok bude rovnaký, ako posledný prieskum. Keďže nás zaujíma najmä predikcia budúcich volieb a pre v tomto období relevantné strany máme údaje o politickom kompase, budeme teda vo finálnom modeli používať túto verziu.
 
 
 
