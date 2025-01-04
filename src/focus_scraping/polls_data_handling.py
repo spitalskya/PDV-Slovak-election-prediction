@@ -242,7 +242,7 @@ def make_train_test_datasets() -> None:
     
     threshold = 1.5
     first_poll_column_index = list(polls.columns).index("1")
-    polls = polls[polls.iloc[:, first_poll_column_index:].gt(threshold).any(axis=1)]
+    polls = polls[(polls.iloc[:, first_poll_column_index:] >= threshold).any(axis=1)]
     
     train_frac = 0.8
     n_train = round(len(polls) * train_frac)

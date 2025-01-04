@@ -133,10 +133,12 @@ def predict_polls_month_before_election(X_polls: pd.DataFrame, elections_in_n_mo
     
     # predict polls for each row separately by Holt's double exponential smoothing
     predictions: list[float] = []
-    for _, party_polls in X_polls.iterrows():
+    for party_name, party_polls in X_polls.iterrows():
         polls_time_series: pd.Series = get_time_series_from_polls(party_polls)
         holt: Holt = Holt(polls_time_series)
-        predictions.append(holt.fit().forecast(elections_in_n_months).iloc[-1])
+        holt = holt.fit()
+        # print(f"{party_name}: alpha={holt.params["smoothing_level"]}, beta={holt.params["smoothing_trend"]}")
+        predictions.append(holt.forecast(elections_in_n_months).iloc[-1])
     
     # return the predictions
     return np.array(predictions)
@@ -218,6 +220,8 @@ def main() -> None:
             },
         index=X_polls.index
     )
+    
+    # sum of results needs to be 100
     results = (100 * results / results.sum(axis=0)).round(2)
     
     # add the allocated seats in parliament (approximate the voters count by 2023 voters count)

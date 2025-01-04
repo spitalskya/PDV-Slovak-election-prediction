@@ -1,19 +1,18 @@
+from typing import Callable, Optional, Type
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import seaborn as sns
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
-import numpy
 from sklearn.base import BaseEstimator, ClassifierMixin
-from typing import Callable, Optional, Type
-from sklearn.svm import SVC
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from utils import join_dfs, make_interactions, extract_and_scale
 from sklearn.feature_selection import SequentialFeatureSelector
 from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+from src.utils import join_dfs, make_interactions, extract_and_scale
 
-numpy.random.seed(42)
+np.random.seed(42)
 
 
 def extract_variables(data: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -189,9 +188,9 @@ def optimal_features(estimator: BaseEstimator,
 
 def main() -> None:
     
-    path_train: str = r"C:\Users\antal\Desktop\matfyz\Princípy DAV\PDV-Slovak-election-prediction\data\polls_by_election_train.csv"
-    path_test: str = r"C:\Users\antal\Desktop\matfyz\Princípy DAV\PDV-Slovak-election-prediction\data\polls_by_election_test.csv"
-    path_general_data: str = r"C:\Users\antal\Desktop\matfyz\Princípy DAV\PDV-Slovak-election-prediction\data\general_data.csv"
+    path_train: str = "data/polls_by_election_train.csv"
+    path_test: str = "data/polls_by_election_test.csv"
+    path_general_data: str = "data/general_data.csv"
 
     data_train: pd.DataFrame = pd.read_csv(path_train)
     data_test: pd.DataFrame = pd.read_csv(path_test)
